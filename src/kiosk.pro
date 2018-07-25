@@ -5,13 +5,13 @@ TARGET = kiosk
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
-    webview.cpp \
+    MainWindow.cpp \
+    WebView.cpp \
     qplayer.cpp \
     KioskSettings.cpp
 
-HEADERS  += mainwindow.h \
-    webview.h \
+HEADERS  += MainWindow.h \
+    WebView.h \
     qplayer.h \
     KioskSettings.h
 

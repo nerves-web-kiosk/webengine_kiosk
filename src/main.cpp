@@ -33,6 +33,11 @@
 ****************************************************************************/
 
 #include <QApplication>
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <err.h>
+
 #include "mainwindow.h"
 #include "KioskSettings.h"
 
@@ -40,6 +45,14 @@ int main(int argc, char * argv[])
 {
     QApplication app(argc, argv);
     KioskSettings settings(app);
+
+    // Drop/change privilege if requested
+    // See https://wiki.sei.cmu.edu/confluence/display/c/POS36-C.+Observe+correct+revocation+order+while+relinquishing+privileges
+    if (settings.gid > 0 && setgid(settings.gid) < 0)
+        err(EXIT_FAILURE, "setgid(%d)", settings.gid);
+
+    if (settings.uid > 0 && setuid(settings.uid) < 0)
+        err(EXIT_FAILURE, "setuid(%d)", settings.uid);
 
     if (settings.opengl == "gl") {
         QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);

@@ -33,6 +33,8 @@ struct KioskSettings
     bool javascriptCanOpenWindows;
     bool debugMenuEnabled;
 
+    uid_t uid;
+    gid_t gid;
 #if 0
 {"view/scale_with_dpi", true},
 {"view/page_scale", 1.0},

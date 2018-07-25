@@ -1,9 +1,9 @@
 #include <QtDebug>
 #include <QtGui>
 #include <QtWebEngineCore>
-#include "webview.h"
+#include "WebView.h"
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "KioskSettings.h"
 
 WebView::WebView(const KioskSettings *settings, QWidget* parent): QWebEngineView(parent),
