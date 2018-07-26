@@ -1,6 +1,19 @@
 # WebengineKiosk
 
-**TODO: Add description**
+Launch and control a fullscreen webbrowser from Elixir. This is intended for use
+
+Here's an example run:
+
+```elixir
+iex> {:ok, kiosk} = WebengineKiosk.start_link(fullscreen: false)
+{:ok, #PID<0.180.0>}
+iex> WebengineKiosk.go_to_url("https://yahoo.com/")
+:ok
+```
+
+## Kiosk options
+
+Doc all of the options here!
 
 ## Installation
 

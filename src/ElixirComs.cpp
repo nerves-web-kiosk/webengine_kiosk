@@ -75,7 +75,7 @@ ssize_t ElixirComs::tryDispatch()
     if (msglen + sizeof(uint16_t) > index_)
         return 0;
 
-    emit messageReceived(KioskMessage(buffer_, msglen));
+    emit messageReceived(KioskMessage(&buffer_[2], msglen));
 
     return msglen + sizeof(uint16_t);
 }

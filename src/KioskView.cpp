@@ -10,7 +10,7 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
     settings_(settings),
     loader_(nullptr)
 {
-    player_ = settings_->eventSoundsEnabled ? new QPlayer(this) : nullptr;
+    player_ = settings_->soundsEnabled ? new QPlayer(this) : nullptr;
     page()->setZoomFactor(settings_->zoomFactor);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::PreventContextMenu);

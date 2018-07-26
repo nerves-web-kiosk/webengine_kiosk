@@ -69,16 +69,16 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"proxy_password", "The password for the proxy.", "password"},
             {"stay_on_top", "Use to make the window stay on top", "bool", "true"},
             {"progress", "Show the load progress.", "bool", "true"},
-            {"event_sounds", "Use to enable click sounds.", "bool", "true"},
+            {"sounds", "Use to enable UI sounds.", "bool", "true"},
             {"window_clicked_sound", "Path to a sound to play when then window is clicked.", "url", "qrc:///ui/window-clicked.ogg"},
             {"link_clicked_sound", "Path to a sound to play when then window is clicked.", "url", "qrc:///ui/link-clicked.ogg"},
-            {"hide_cursor", "Specify the hide the mouse cursor", "bool", "false"},
-            {"javascript", "Enable Javascript", "bool", "true"},
-            {"javascript_can_open_windows", "Allow Javascript to open windows", "bool", "false"},
+            {"hide_cursor", "Specify the hide the mouse cursor.", "bool", "false"},
+            {"javascript", "Enable Javascript.", "bool", "true"},
+            {"javascript_can_open_windows", "Allow Javascript to open windows.", "bool", "false"},
             {"debug_menu", "Enable a debug menu", "bool", "false"},
-            {"uid", "Drop priviledge and run as this uid", "uid/user"},
-            {"gid", "Drop priviledge and run as this gid", "gid/group"},
-            {"zoom_factor", "The zoom factor for the page (0.25 to 5.0)", "factor", "1.0"}
+            {"uid", "Drop priviledge and run as this uid.", "uid/user"},
+            {"gid", "Drop priviledge and run as this gid.", "gid/group"},
+            {"zoom_factor", "The zoom factor for the page (0.25 to 5.0).", "factor", "1.0"}
         });
     parser.addOptions(options);
     parser.process(app);
@@ -98,7 +98,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     proxyPassword = parser.value("proxy_password");
     stayOnTop = toBool(parser.value("stay_on_top"));
     progress = toBool(parser.value("progress"));
-    eventSoundsEnabled = toBool(parser.value("event_sounds"));
+    soundsEnabled = toBool(parser.value("sounds"));
     windowClickedSound = QUrl(parser.value("window_clicked_sound"));
     linkClickedSound = QUrl(parser.value("link_clicked_sound"));
     hideCursor = toBool(parser.value("hide_cursor"));

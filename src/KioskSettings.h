@@ -27,7 +27,7 @@ struct KioskSettings
     bool scaleWithDPI;
     double pageScale;
 
-    bool eventSoundsEnabled;
+    bool soundsEnabled;
     QUrl windowClickedSound;
     QUrl linkClickedSound;
 
