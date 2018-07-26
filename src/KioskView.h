@@ -15,8 +15,6 @@ class KioskView : public QWebEngineView
 public:
     explicit KioskView(const KioskSettings *settings, QWidget *parent = nullptr);
 
-    void loadHomepage();
-
     QWebEngineView *createWindow(QWebEnginePage::WebWindowType type);
 
     void playSound(const QUrl &sound);

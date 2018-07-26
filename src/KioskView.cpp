@@ -16,13 +16,10 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
     setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
-void KioskView::loadHomepage()
-{
-    load(settings_->homepage);
-}
-
 void KioskView::handleWindowCloseRequested()
 {
+    // TODO: Do we handle windows opening and if so, what happens
+    // when they close.
     qDebug() << "Handle windowCloseRequested:";
 #if 0
     if (mainSettings->value("browser/show_homepage_on_window_close").toBool()) {
