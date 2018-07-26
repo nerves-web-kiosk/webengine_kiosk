@@ -5,15 +5,22 @@ TARGET = kiosk
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    MainWindow.cpp \
-    WebView.cpp \
     qplayer.cpp \
-    KioskSettings.cpp
+    KioskSettings.cpp \
+    ElixirComs.cpp \
+    KioskView.cpp \
+    KioskMessage.cpp \
+    Kiosk.cpp \
+    KioskWindow.cpp
 
-HEADERS  += MainWindow.h \
-    WebView.h \
+HEADERS  += \
     qplayer.h \
-    KioskSettings.h
+    KioskSettings.h \
+    ElixirComs.h \
+    KioskView.h \
+    KioskMessage.h \
+    Kiosk.h \
+    KioskWindow.h
 
 target.path = ../priv
 

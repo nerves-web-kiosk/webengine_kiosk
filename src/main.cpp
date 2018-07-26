@@ -38,7 +38,7 @@
 #include <unistd.h>
 #include <err.h>
 
-#include "mainwindow.h"
+#include "Kiosk.h"
 #include "KioskSettings.h"
 
 int main(int argc, char * argv[])
@@ -56,23 +56,19 @@ int main(int argc, char * argv[])
 
     if (settings.opengl == "gl") {
         QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
-        qDebug() << "attempting to use native OpenGL";
+        qDebug("OpenGL: Qt::AA_UseDesktopOpenGL");
     } else if (settings.opengl == "gles") {
         QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
-        qDebug() << "attempting to use OpenGL ES (or ANGLE, on Windows)";
+        qDebug("OpenGL: Qt::AA_UseOpenGLES");
     } else if (settings.opengl == "software") {
-        qDebug() << "using software rendering";
         QCoreApplication::setAttribute(Qt::AA_UseSoftwareOpenGL);
+        qDebug("OpenGL: Qt::AA_UseSoftwareOpenGL");
     } else {
-        qDebug() << "using automatic gl";
+        qDebug("OpenGL: Default");
     }
 
-    MainWindow browser(&settings);
-    browser.init();
-
-    // executes browser.cleanupSlot() when the Qt framework emits aboutToQuit() signal.
-    QObject::connect(&app, SIGNAL(aboutToQuit()),
-                     &browser, SLOT(cleanupSlot()));
+    Kiosk kiosk(&settings);
+    kiosk.init();
 
     return app.exec();
 }

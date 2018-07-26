@@ -57,6 +57,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"clear_cache", "Clear cached request data."},
             {"homepage", "Set starting url", "url", "qrc:///ui/default.html"},
             {"monitor", "Display window on the <n>th monitor.", "n", "0"},
+            {"fullscreen", "Run kiosk fullscreen", "true"},
             {"opengl", "Specify OpenGL preference.", "auto|software|gles|gl", "auto"},
             {"proxy_enable", "Enable a proxy.", "bool", "false" },
             {"proxy_system", "Use the system proxy.", "bool", "false" },
@@ -74,7 +75,8 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"javascript_can_open_windows", "Allow Javascript to open windows", "bool", "false"},
             {"debug_menu", "Enable a debug menu", "bool", "false"},
             {"uid", "Drop priviledge and run as this uid", "uid/user"},
-            {"gid", "Drop priviledge and run as this gid", "gid/group"}
+            {"gid", "Drop priviledge and run as this gid", "gid/group"},
+            {"zoom_factor", "The zoom factor for the page (0.25 to 5.0)", "factor", "1.0"}
         });
     parser.addOptions(options);
     parser.process(app);
@@ -82,6 +84,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     clearCache = toBool(parser.value("clear_cache"));
     homepage = QUrl(parser.value("homepage"));
     monitor = parser.value("monitor").toInt();
+    fullscreen = toBool(parser.value("fullscreen"));
     opengl = parser.value("opengl");
     proxyEnabled = toBool(parser.value("proxy_enable"));
     proxySystem = toBool(parser.value("proxy_system"));
@@ -100,4 +103,9 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     debugMenuEnabled = toBool(parser.value("debug_menu"));
     uid = stringToUid(parser.value("uid"));
     gid = stringToGid(parser.value("gid"));
+    zoomFactor = parser.value("zoom_factor").toDouble();
+    if (zoomFactor < 0.25)
+        zoomFactor = 0.25;
+    else if (zoomFactor > 5.0)
+        zoomFactor = 5.0;
 }
