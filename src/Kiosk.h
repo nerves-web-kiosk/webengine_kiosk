@@ -30,6 +30,9 @@ private slots:
     void finishLoading();
 
 private:
+    void moveToMonitor();
+
+private:
     const KioskSettings *settings_;
     ElixirComs *coms_;
 

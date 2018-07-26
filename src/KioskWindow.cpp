@@ -38,7 +38,6 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     connect(tempAction, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
     addAction(tempAction);
 
-
     if (settings->debugMenuEnabled) {
         QMenu *debugMenu = menuBar()->addMenu(tr("&Debug"));
         QAction *action = new QAction(tr("Run &Javascript"), this);
@@ -73,25 +72,6 @@ void KioskWindow::doGotoURLDialog()
         kiosk_->goToUrl(uri);
 }
 
-void KioskWindow::init()
-{
-    qDebug("MainWindow::init()");
-
-    if (settings_->hideCursor)
-        QApplication::setOverrideCursor(Qt::BlankCursor);
-
-    QDesktopWidget *desktop = QApplication::desktop();
-    connect(desktop, SIGNAL(resized(int)), SLOT(desktopResized(int)));
-
-
-    showFullScreen();
-#if 0
-    if (mainSettings_->value("view/stay_on_top").toBool()) {
-        setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
-    }
-#endif
-}
-
 void KioskWindow::showProgress(int p)
 {
     loadProgress_->setValue(p);
@@ -102,40 +82,5 @@ void KioskWindow::hideProgress()
 {
     loadProgress_->hide();
 }
-
-void KioskWindow::showFullScreen()
-{
-    qDebug("showFullScreen");
-    int screen = computedScreen();
-    if (screen >= 0) {
-        if (this->windowHandle()) {
-            this->windowHandle()->setScreen(qApp->screens()[screen]);
-        }
-        QRect screenGeometry = qApp->desktop()->availableGeometry(screen);
-        setGeometry(screenGeometry);
-    }
-
-    QMainWindow::showFullScreen();
-}
-
-int KioskWindow::computedScreen() {
-    qDebug("MainWindow::computedScreen");
-    const QList<QScreen*> screens = qApp->screens();
-    int numScreens = screens.size();
-    if (settings_->monitor >= numScreens) {
-        qDebug() << "invalid monitor" << settings_->monitor << ", you only have " << numScreens << "screens.";
-        return 0;
-    } else {
-        qDebug() << "setting screen" << settings_->monitor+1 << "/" << numScreens;
-        return settings_->monitor;
-    }
-}
-
-void KioskWindow::desktopResized(int p)
-{
-    qDebug() << "Desktop resized event: " << p;
-    showFullScreen();
-}
-
 
 

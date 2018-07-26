@@ -1,4 +1,5 @@
 #include "KioskMessage.h"
+#include <QUrl>
 
 KioskMessage::KioskMessage(const QByteArray &rawMessage) :
     rawMessage_(rawMessage)
@@ -13,7 +14,6 @@ KioskMessage::KioskMessage(KioskMessage::Type type, QByteArray payload) :
 KioskMessage::KioskMessage(const char *buffer, int length) :
     rawMessage_(buffer, length)
 {
-
 }
 
 KioskMessage::Type KioskMessage::type() const
@@ -42,4 +42,10 @@ KioskMessage KioskMessage::finishedLoadingPageMessage()
 {
     char message[1] = {KioskMessage::FinishedLoadingPage};
     return KioskMessage(message, sizeof(message));
+}
+
+KioskMessage KioskMessage::urlChanged(const QUrl &url)
+{
+    QByteArray str = url.toString().toUtf8();
+    return KioskMessage(KioskMessage::URLChanged, str);
 }

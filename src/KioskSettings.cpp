@@ -58,6 +58,8 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"homepage", "Set starting url", "url", "qrc:///ui/default.html"},
             {"monitor", "Display window on the <n>th monitor.", "n", "0"},
             {"fullscreen", "Run kiosk fullscreen", "true"},
+            {"width", "When not in fullscreen mode, this is the window width", "pixels", "1024"},
+            {"height", "When not in fullscreen mode, this is the window height", "pixels", "768"},
             {"opengl", "Specify OpenGL preference.", "auto|software|gles|gl", "auto"},
             {"proxy_enable", "Enable a proxy.", "bool", "false" },
             {"proxy_system", "Use the system proxy.", "bool", "false" },
@@ -85,6 +87,8 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     homepage = QUrl(parser.value("homepage"));
     monitor = parser.value("monitor").toInt();
     fullscreen = toBool(parser.value("fullscreen"));
+    width = parser.value("width").toInt();
+    height = parser.value("height").toInt();
     opengl = parser.value("opengl");
     proxyEnabled = toBool(parser.value("proxy_enable"));
     proxySystem = toBool(parser.value("proxy_system"));

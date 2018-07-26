@@ -13,6 +13,7 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
     player_ = settings_->eventSoundsEnabled ? new QPlayer(this) : nullptr;
     page()->setZoomFactor(settings_->zoomFactor);
     setFocusPolicy(Qt::StrongFocus);
+    setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
 void KioskView::loadHomepage()
@@ -36,10 +37,9 @@ void KioskView::handleWindowCloseRequested()
 
 void KioskView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        qDebug() << "Window Clicked!";
+    if (event->button() == Qt::LeftButton)
         playSound(settings_->windowClickedSound);
-    }
+
     QWebEngineView::mousePressEvent(event);
 }
 

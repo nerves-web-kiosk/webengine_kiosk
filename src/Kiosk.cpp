@@ -25,7 +25,7 @@ Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
     connect(view_, SIGNAL(loadStarted()), SLOT(startLoading()));
     connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
     connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
-    connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
+    connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
     window_->setCentralWidget(view_);
 }
 
@@ -47,7 +47,17 @@ void Kiosk::init()
         }
     }
 
-    window_->showFullScreen();
+    if (settings_->hideCursor)
+        QApplication::setOverrideCursor(Qt::BlankCursor);
+
+    moveToMonitor();
+    if (settings_->fullscreen) {
+        window_->showFullScreen();
+    } else {
+        window_->show();
+        window_->resize(settings_->width, settings_->height);
+    }
+
     goToUrl(settings_->homepage);
 }
 
@@ -114,9 +124,18 @@ void Kiosk::finishLoading()
 
 void Kiosk::urlChanged(const QUrl &url)
 {
-    qDebug() << "URL changes: " << url.toString();
+    coms_->send(KioskMessage::urlChanged(url));
 
     // This is real link clicked
     view_->playSound(settings_->linkClickedSound);
 }
 
+void Kiosk::moveToMonitor()
+{
+    QList<QScreen*> screens = QApplication::screens();
+    if (settings_->monitor >= 0 && settings_->monitor < screens.length()) {
+        QRect screenRect = screens.at(settings_->monitor)->geometry();
+        if (!screenRect.contains(window_->geometry()))
+            window_->move(screenRect.x(), screenRect.y());
+    }
+}

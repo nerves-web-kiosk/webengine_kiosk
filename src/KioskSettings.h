@@ -12,6 +12,8 @@ struct KioskSettings
     bool clearCache;
     QUrl homepage;
     bool fullscreen;
+    int width;
+    int height;
     int monitor;
     QString opengl;
     bool proxyEnabled;

@@ -18,19 +18,12 @@ public:
     explicit KioskWindow(Kiosk *kiosk, const KioskSettings *settings);
     ~KioskWindow();
 
-    void init();
-
     void showProgress(int p);
     void hideProgress();
-
-    void showFullScreen();
-    qreal getPixelRatio();
 
 private slots:
     void doRunJavascriptDialog();
     void doGotoURLDialog();
-
-    void desktopResized(int p);
 
 private:
     int computedScreen();

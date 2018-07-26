@@ -3,6 +3,8 @@
 
 #include <QByteArray>
 
+class QUrl;
+
 class KioskMessage
 {
 public:
@@ -11,7 +13,8 @@ public:
         RunJavascript = 2,
         LoadingPage = 3,
         Progress = 4,
-        FinishedLoadingPage = 5
+        FinishedLoadingPage = 5,
+        URLChanged = 6
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);
@@ -27,6 +30,7 @@ public:
     static KioskMessage progressMessage(int progress);
     static KioskMessage loadingPageMessage();
     static KioskMessage finishedLoadingPageMessage();
+    static KioskMessage urlChanged(const QUrl &url);
 
 private:
     const QByteArray rawMessage_;
