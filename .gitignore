@@ -31,3 +31,4 @@ webengine_kiosk-*.tar
 /src/*.pro.user
 /src/Makefile
 /src/kiosk
+/src/pkg-config_wrapper.sh
