@@ -1,7 +1,7 @@
 all: submake
 
 src/Makefile:
-	cd src && $(NERVES_SYSTEM)/host/usr/bin/qmake kiosk.pro
+	cd src && qmake -d kiosk.pro
 
 submake: src/Makefile
 	+$(MAKE) -C src install
