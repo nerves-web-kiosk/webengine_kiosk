@@ -9,6 +9,18 @@ defmodule WebengineKiosk do
   @msg_finished_loading_page 5
   @msg_url_changed 6
 
+
+  def child_spec({opts, genserver_opts}) do
+    id = genserver_opts[:id] || __MODULE__
+    %{
+      id: id,
+      start: {__MODULE__, :start_link, [opts, genserver_opts]}
+    }
+  end
+  def child_spec(opts) do
+    child_spec({opts, []})
+  end
+
   @moduledoc """
   Documentation for WebengineKiosk.
   """
