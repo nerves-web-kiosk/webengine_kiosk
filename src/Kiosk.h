@@ -8,6 +8,7 @@ class ElixirComs;
 class KioskMessage;
 class KioskWindow;
 class KioskView;
+class KioskProgress;
 
 class Kiosk : public QObject
 {
@@ -29,6 +30,8 @@ private slots:
     void setProgress(int p);
     void finishLoading();
 
+    void completeInit();
+
 private:
     void moveToMonitor();
 
@@ -40,7 +43,7 @@ private:
     KioskView *view_;
 
     bool loadingPage_;
-
+    bool showPageWhenDone_;
 };
 
 #endif // KIOSK_H

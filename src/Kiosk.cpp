@@ -1,32 +1,25 @@
 #include "Kiosk.h"
 #include "KioskWindow.h"
 #include "KioskView.h"
+#include "KioskProgress.h"
 #include "ElixirComs.h"
 
 #include <QNetworkProxy>
 #include <QWebEngineSettings>
 #include <QApplication>
+#include <QLabel>
+#include <QMetaObject>
 
 Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
     QObject(parent),
     settings_(settings),
-    loadingPage_(false)
+    coms_(nullptr),
+    view_(nullptr),
+    loadingPage_(false),
+    showPageWhenDone_(true)
 {
-    // Set up communication with Elixir
-    coms_ = new ElixirComs(this);
-    connect(coms_, SIGNAL(messageReceived(KioskMessage)), SLOT(handleRequest(KioskMessage)));
-
     // Set up the UI
     window_ = new KioskWindow(this, settings);
-    view_ = new KioskView(settings_, window_);
-    view_->settings()->setAttribute(QWebEngineSettings::JavascriptEnabled, settings_->javascriptEnabled);
-    view_->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, settings_->javascriptCanOpenWindows);
-
-    connect(view_, SIGNAL(loadStarted()), SLOT(startLoading()));
-    connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
-    connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
-    connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
-    window_->setCentralWidget(view_);
 }
 
 void Kiosk::init()
@@ -58,7 +51,28 @@ void Kiosk::init()
         window_->resize(settings_->width, settings_->height);
     }
 
-    goToUrl(settings_->homepage);
+    // Do the heavy lifting of starting up the webbrowser on the next
+    // pass through the event loop.
+    QTimer::singleShot(100, this, SLOT(completeInit()));
+}
+
+void Kiosk::completeInit()
+{
+    // Set up communication with Elixir
+    coms_ = new ElixirComs(this);
+    connect(coms_, SIGNAL(messageReceived(KioskMessage)), SLOT(handleRequest(KioskMessage)));
+
+    // Start the browser up
+    view_ = new KioskView(settings_);
+    view_->settings()->setAttribute(QWebEngineSettings::JavascriptEnabled, settings_->javascriptEnabled);
+    view_->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, settings_->javascriptCanOpenWindows);
+
+    connect(view_, SIGNAL(loadStarted()), SLOT(startLoading()));
+    connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
+    connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
+    connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
+    window_->setView(view_);
+    view_->load(settings_->homepage);
 }
 
 void Kiosk::goToUrl(const QUrl &url)
@@ -80,6 +94,10 @@ void Kiosk::handleRequest(const KioskMessage &message)
 
     case KioskMessage::RunJavascript:
         runJavascript(QString::fromUtf8(message.payload()));
+        break;
+
+    case KioskMessage::Blank:
+        window_->setBrowserVisible(message.payload().at(0) == 0);
         break;
 
     default:
@@ -115,6 +133,11 @@ void Kiosk::finishLoading()
     if (loadingPage_) {
         coms_->send(KioskMessage::finishedLoadingPageMessage());
         loadingPage_ = false;
+
+        if (showPageWhenDone_) {
+            // Let the event loop settle before showing the browser
+            QTimer::singleShot(100, window_, SLOT(showBrowser()));
+        }
     }
 
     // 3. Focus window and click into it to stimulate event loop after signal handling

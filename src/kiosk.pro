@@ -11,7 +11,8 @@ SOURCES += main.cpp\
     KioskView.cpp \
     KioskMessage.cpp \
     Kiosk.cpp \
-    KioskWindow.cpp
+    KioskWindow.cpp \
+    KioskProgress.cpp
 
 HEADERS  += \
     qplayer.h \
@@ -20,7 +21,8 @@ HEADERS  += \
     KioskView.h \
     KioskMessage.h \
     Kiosk.h \
-    KioskWindow.h
+    KioskWindow.h \
+    KioskProgress.h
 
 target.path = ../priv
 

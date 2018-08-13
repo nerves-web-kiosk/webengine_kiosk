@@ -12,6 +12,7 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
 {
     player_ = settings_->soundsEnabled ? new QPlayer(this) : nullptr;
     page()->setZoomFactor(settings_->zoomFactor);
+    page()->setBackgroundColor(settings_->backgroundColor);
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::PreventContextMenu);
 }

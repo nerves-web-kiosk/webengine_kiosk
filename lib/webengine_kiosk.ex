@@ -8,7 +8,7 @@ defmodule WebengineKiosk do
   @msg_progress 4
   @msg_finished_loading_page 5
   @msg_url_changed 6
-
+  @msg_blank 7
 
   def child_spec({opts, genserver_opts}) do
     id = genserver_opts[:id] || __MODULE__
@@ -22,12 +22,45 @@ defmodule WebengineKiosk do
   end
 
   @moduledoc """
-  Documentation for WebengineKiosk.
+  Start up and control a browser.
+
   """
 
   @doc """
-  Start a kiosk
+  Start the kiosk.
 
+  The kiosk starts fullscreen and goes to a default local web page. To change this,
+  set one or more options:
+
+  * `background_color: color` - specify a background color as #RRGGBB or by name
+  * `blank_image: path` - specify a path to an image for when the screen is blanked
+  * `fullscreen: boolean` - show fullscreen
+  * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
+  * `progress: boolean` - show a progress bar when loading pages
+
+  Untested:
+
+  * `monitor: index` - select the monitor for the webbrowser (0, 1, etc.)
+  * `clear_cache: boolean`
+  * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend to use
+  * `proxy_enable: boolean` - enable/disable proxy support
+  * `proxy_system: ` -
+  * `proxy_host: hostname` - the host to connect to for using a proxy
+  * `proxy_port: port` - the port to connect to on the proxy
+  * `proxy_username: username` - a username for the proxy
+  * `proxy_password: password` - a password for the proxy
+  * `stay_on_top: boolean` -
+  * `sounds: boolean` - play sounds on clicks
+  * `window_clicked_sound: url` - a sound to play when the window is clicked
+  * `link_clicked_sound: url` - a sound to play when a link is clicked
+  * `hide_cursor: boolean` - show or hide the mouse pointer
+  * `javascript: boolean` - enable or disable Javascript support
+  * `javascript_can_open_windows: boolean` - allow Javascript to open windows
+  * `debug_menu: boolean` - enable a menubar for debugging
+  * `width: pixels` - when not fullscreen, the window is this width
+  * `height: pixels` - when not fullscreen, the window is this height
+  * `uid: uid` - run the browser as this user
+  * `gid: gid` - run the browser with this group id
   """
   @spec start_link(Keyword.t(), GenServer.options()) :: {:ok, pid} | {:error, term}
   def start_link(args, genserver_opts \\ []) do
@@ -40,24 +73,32 @@ defmodule WebengineKiosk do
   Stop the kiosk
   """
   @spec stop(GenServer.server()) :: :ok
-  def stop(pid) do
-    GenServer.stop(pid)
+  def stop(server) do
+    GenServer.stop(server)
+  end
+
+  @doc """
+  Blank the screen
+  """
+  @spec blank(GenServer.server(), boolean()) :: :ok
+  def blank(server, yes) do
+    GenServer.call(server, {:blank, yes})
   end
 
   @doc """
   Request that the browser go to the specified URL.
   """
   @spec go_to_url(GenServer.server(), String.t()) :: :ok | {:error, term}
-  def go_to_url(pid, url) do
-    GenServer.call(pid, {:go_to_url, url})
+  def go_to_url(server, url) do
+    GenServer.call(server, {:go_to_url, url})
   end
 
   @doc """
   Run arbitrary Javascript in the browser
   """
   @spec run_javascript(GenServer.server(), String.t()) :: :ok | {:error, term}
-  def run_javascript(pid, code) do
-    GenServer.call(pid, {:run_javascript, code})
+  def run_javascript(server, code) do
+    GenServer.call(server, {:run_javascript, code})
   end
 
   def init(args) do
@@ -87,6 +128,15 @@ defmodule WebengineKiosk do
     send(state, {self(), {:command, msg}})
     {:reply, :ok, state}
   end
+
+  def handle_call({:blank, yes}, _from, state) do
+    msg = blank_message(yes)
+    send(state, {self(), {:command, msg}})
+    {:reply, :ok, state}
+  end
+
+  defp blank_message(true), do: <<@msg_blank, 1>>
+  defp blank_message(false), do: <<@msg_blank, 0>>
 
   def handle_info({_, {:data, msg}}, state) do
     dispatch_message(msg, state)
@@ -146,7 +196,9 @@ defmodule WebengineKiosk do
     :width,
     :height,
     :uid,
-    :gid
+    :gid,
+    :blank_image,
+    :background_color
   ]
 
   defp check_args(args) do

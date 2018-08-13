@@ -78,7 +78,9 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"debug_menu", "Enable a debug menu", "bool", "false"},
             {"uid", "Drop priviledge and run as this uid.", "uid/user"},
             {"gid", "Drop priviledge and run as this gid.", "gid/group"},
-            {"zoom_factor", "The zoom factor for the page (0.25 to 5.0).", "factor", "1.0"}
+            {"zoom_factor", "The zoom factor for the page (0.25 to 5.0).", "factor", "1.0"},
+            {"blank_image", "An image to use when the screen should be blank", "path", ""},
+            {"background_color", "The background color of the browser and blank screen (unless there's a blank_image)", "#RRGGBB or name", "white"}
         });
     parser.addOptions(options);
     parser.process(app);
@@ -112,4 +114,6 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
         zoomFactor = 0.25;
     else if (zoomFactor > 5.0)
         zoomFactor = 5.0;
+    blankImage = parser.value("blank_image");
+    backgroundColor = QColor(parser.value("background_color"));
 }

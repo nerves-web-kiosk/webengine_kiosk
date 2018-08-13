@@ -2,13 +2,14 @@
 #define KIOSK_WINDOW_H
 
 #include <QMainWindow>
-#include <QProgressBar>
 #include <QtWebEngineCore>
 
-#include "KioskView.h"
 #include "KioskSettings.h"
 
 class Kiosk;
+class KioskProgress;
+class KioskView;
+class QLabel;
 
 class KioskWindow : public QMainWindow
 {
@@ -18,8 +19,18 @@ public:
     explicit KioskWindow(Kiosk *kiosk, const KioskSettings *settings);
     ~KioskWindow();
 
-    void showProgress(int p);
+    void setView(KioskView *view);
+    void setBrowserVisible(bool enabled);
+
+    void showProgress(int percent);
     void hideProgress();
+
+public slots:
+    void showBrowser();
+    void hideBrowser();
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 private slots:
     void doRunJavascriptDialog();
@@ -31,7 +42,12 @@ private:
 private:
     Kiosk *kiosk_;
     const KioskSettings *settings_;
-    QProgressBar *loadProgress_;
+
+    KioskProgress *progress_;
+    QLabel *blank_;
+    KioskView *view_;
+
+    bool showingBrowser_;
 };
 
 #endif // KIOSK_WINDOW_H

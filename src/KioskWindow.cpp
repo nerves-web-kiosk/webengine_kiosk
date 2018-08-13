@@ -1,36 +1,35 @@
 #include "KioskWindow.h"
 #include "Kiosk.h"
+#include "KioskProgress.h"
+#include "KioskView.h"
 
 #include <QMenu>
 #include <QMenuBar>
 #include <QInputDialog>
-
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QLabel>
 
 KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     QMainWindow(),
     kiosk_(kiosk),
-    settings_(settings)
+    settings_(settings),
+    view_(nullptr),
+    showingBrowser_(false)
 {
     setMinimumWidth(320);
     setMinimumHeight(200);
 
-    loadProgress_ = new QProgressBar();
-    loadProgress_->setWindowFlag(Qt::FramelessWindowHint, true);
-    loadProgress_->setContentsMargins(2, 2, 2, 2);
-    loadProgress_->setMinimumWidth(100);
-    loadProgress_->setMinimumHeight(16);
-    loadProgress_->setFixedHeight(16);
-    loadProgress_->setAutoFillBackground(true);
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor(255,255,255,63));
-    loadProgress_->setPalette(palette);
+    QWidget *centralWidget = new QWidget(this);
 
-    // Do not work... Need Layout...
-    loadProgress_->setAlignment(Qt::AlignTop);
-    loadProgress_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    loadProgress_->hide();
+    blank_ = new QLabel(centralWidget);
+    blank_->setAlignment(Qt::AlignCenter);
+    blank_->setStyleSheet(QString("background: %1").arg(settings->backgroundColor.name()));
+    if (!settings->blankImage.isEmpty())
+        blank_->setPixmap(settings->blankImage);
+
+    progress_ = new KioskProgress(centralWidget);
+    progress_->hide();
+
+    setCentralWidget(centralWidget);
 
     QAction* tempAction = new QAction(this);
     tempAction->setShortcut(QKeySequence::Quit);
@@ -51,7 +50,59 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
 
 KioskWindow::~KioskWindow()
 {
-    delete loadProgress_;
+}
+
+void KioskWindow::setView(KioskView *view)
+{
+    view_ = view;
+    view_->setVisible(showingBrowser_);
+    view_->setParent(centralWidget());
+    view_->stackUnder(progress_);
+    QSize sz = centralWidget()->size();
+    view_->setGeometry(0, 0, sz.width(), sz.height());
+}
+
+void KioskWindow::setBrowserVisible(bool enabled)
+{
+    showingBrowser_ = enabled;
+    if (view_)
+        view_->setVisible(enabled);
+}
+
+void KioskWindow::showProgress(int percent)
+{
+    progress_->setProgress(percent);
+    progress_->show();
+}
+
+void KioskWindow::hideProgress()
+{
+    progress_->hide();
+}
+
+void KioskWindow::showBrowser()
+{
+    setBrowserVisible(true);
+}
+
+void KioskWindow::hideBrowser()
+{
+    setBrowserVisible(false);
+}
+
+void KioskWindow::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+
+    QSize sz = centralWidget()->size();
+
+    blank_->setGeometry(0, 0, sz.width(), sz.height());
+    if (view_)
+        view_->setGeometry(0, 0, sz.width(), sz.height());
+
+    int x = (sz.width() - progress_->width()) / 2;
+    int y = (sz.height() - progress_->height()) / 2;
+    progress_->setGeometry(x, y, progress_->width(), progress_->height());
 }
 
 void KioskWindow::doRunJavascriptDialog()
@@ -71,16 +122,4 @@ void KioskWindow::doGotoURLDialog()
     if (ok && !uri.isEmpty())
         kiosk_->goToUrl(uri);
 }
-
-void KioskWindow::showProgress(int p)
-{
-    loadProgress_->setValue(p);
-    loadProgress_->show();
-}
-
-void KioskWindow::hideProgress()
-{
-    loadProgress_->hide();
-}
-
 

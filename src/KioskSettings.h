@@ -2,6 +2,7 @@
 #define KIOSKSETTINGS_H
 
 #include <QUrl>
+#include <QColor>
 
 class QCoreApplication;
 
@@ -40,6 +41,9 @@ struct KioskSettings
     gid_t gid;
 
     qreal zoomFactor;
+
+    QString blankImage;
+    QColor backgroundColor;
 };
 
 #endif // KIOSKSETTINGS_H

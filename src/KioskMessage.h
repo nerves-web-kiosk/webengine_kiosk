@@ -14,7 +14,8 @@ public:
         LoadingPage = 3,
         Progress = 4,
         FinishedLoadingPage = 5,
-        URLChanged = 6
+        URLChanged = 6,
+        Blank = 7
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);
