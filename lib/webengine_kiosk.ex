@@ -17,13 +17,16 @@ defmodule WebengineKiosk do
   Start a kiosk
 
   """
-  @spec start_link(Keyword.t()) :: {:ok, pid} | {:error, term}
-  def start_link(args) do
+  @spec start_link(Keyword.t(), GenServer.options()) :: {:ok, pid} | {:error, term}
+  def start_link(args, genserver_opts \\ []) do
     with :ok <- check_args(args) do
-      GenServer.start_link(__MODULE__, args)
+      GenServer.start_link(__MODULE__, args, genserver_opts)
     end
   end
 
+  @doc """
+  Stop the kiosk
+  """
   @spec stop(GenServer.server()) :: :ok
   def stop(pid) do
     GenServer.stop(pid)
@@ -37,6 +40,9 @@ defmodule WebengineKiosk do
     GenServer.call(pid, {:go_to_url, url})
   end
 
+  @doc """
+  Run arbitrary Javascript in the browser
+  """
   @spec run_javascript(GenServer.server(), String.t()) :: :ok | {:error, term}
   def run_javascript(pid, code) do
     GenServer.call(pid, {:run_javascript, code})
