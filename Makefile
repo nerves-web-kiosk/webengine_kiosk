@@ -1,7 +1,7 @@
 all: submake
 
 src/Makefile:
-	cd src && qmake -d kiosk.pro
+	cd src && qmake kiosk.pro
 
 submake: src/Makefile
 	+$(MAKE) -C src install
