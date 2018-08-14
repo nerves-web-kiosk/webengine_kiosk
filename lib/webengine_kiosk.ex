@@ -37,6 +37,7 @@ defmodule WebengineKiosk do
   * `fullscreen: boolean` - show fullscreen
   * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
   * `progress: boolean` - show a progress bar when loading pages
+  * `sounds: boolean` - play sounds on clicks
 
   Untested:
 
@@ -50,7 +51,6 @@ defmodule WebengineKiosk do
   * `proxy_username: username` - a username for the proxy
   * `proxy_password: password` - a password for the proxy
   * `stay_on_top: boolean` -
-  * `sounds: boolean` - play sounds on clicks
   * `window_clicked_sound: url` - a sound to play when the window is clicked
   * `link_clicked_sound: url` - a sound to play when a link is clicked
   * `hide_cursor: boolean` - show or hide the mouse pointer
