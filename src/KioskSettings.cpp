@@ -1,49 +1,10 @@
 #include "KioskSettings.h"
 #include <QCommandLineParser>
 #include <QVariant>
-#include <pwd.h>
-#include <grp.h>
-#include <err.h>
 
 static bool toBool(const QString &v)
 {
     return !v.isNull() && v == QLatin1String("true");
-}
-
-static uid_t stringToUid(const QString &s)
-{
-    if (s.isEmpty())
-        return 0;
-
-    bool ok;
-    uid_t uid = (uid_t) s.toUInt(&ok);
-    if (!ok) {
-        struct passwd *passwd = getpwnam(qPrintable(s));
-        if (!passwd)
-            errx(EXIT_FAILURE, "Unknown user '%s'", qPrintable(s));
-        uid = passwd->pw_uid;
-    }
-    if (uid == 0)
-        errx(EXIT_FAILURE, "Setting the user to root or uid 0 is not allowed");
-    return uid;
-}
-
-static gid_t stringToGid(const QString &s)
-{
-    if (s.isEmpty())
-        return 0;
-
-    bool ok;
-    gid_t gid = (gid_t) s.toUInt(&ok);
-    if (!ok) {
-        struct group *group = getgrnam(qPrintable(s));
-        if (!group)
-            errx(EXIT_FAILURE, "Unknown group '%s'", qPrintable(s));
-        gid = group->gr_gid;
-    }
-    if (gid == 0)
-        errx(EXIT_FAILURE, "Setting the group to root or gid 0 is not allowed");
-    return gid;
 }
 
 KioskSettings::KioskSettings(const QCoreApplication &app)
@@ -107,8 +68,8 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     javascriptEnabled = toBool(parser.value("javascript"));
     javascriptCanOpenWindows = toBool(parser.value("javascript_can_open_windows"));
     debugMenuEnabled = toBool(parser.value("debug_menu"));
-    uid = stringToUid(parser.value("uid"));
-    gid = stringToGid(parser.value("gid"));
+    uid = 0; // Set in main.c
+    gid = 0; // Set in main.c
     zoomFactor = parser.value("zoom_factor").toDouble();
     if (zoomFactor < 0.25)
         zoomFactor = 0.25;
