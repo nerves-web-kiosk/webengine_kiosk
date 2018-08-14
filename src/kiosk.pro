@@ -12,7 +12,8 @@ SOURCES += main.cpp\
     KioskMessage.cpp \
     Kiosk.cpp \
     KioskWindow.cpp \
-    KioskProgress.cpp
+    KioskProgress.cpp \
+    Blanking.cpp
 
 HEADERS  += \
     qplayer.h \
@@ -22,7 +23,8 @@ HEADERS  += \
     KioskMessage.h \
     Kiosk.h \
     KioskWindow.h \
-    KioskProgress.h
+    KioskProgress.h \
+    Blanking.h
 
 target.path = ../priv
 

@@ -1,6 +1,7 @@
 #include <QtDebug>
 #include <QtGui>
 #include <QtWebEngineCore>
+#include <QApplication>
 #include "KioskView.h"
 
 #include "KioskWindow.h"
@@ -13,15 +14,18 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
     player_ = settings_->soundsEnabled ? new QPlayer(this) : nullptr;
     page()->setZoomFactor(settings_->zoomFactor);
     page()->setBackgroundColor(settings_->backgroundColor);
+
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::PreventContextMenu);
+
+    QApplication::instance()->installEventFilter(this);
 }
 
 void KioskView::handleWindowCloseRequested()
 {
     // TODO: Do we handle windows opening and if so, what happens
     // when they close.
-    qDebug() << "Handle windowCloseRequested:";
+    qDebug("Handle windowCloseRequested:");
 #if 0
     if (mainSettings->value("browser/show_homepage_on_window_close").toBool()) {
         qDebug() << "-- load homepage";
@@ -33,18 +37,29 @@ void KioskView::handleWindowCloseRequested()
 #endif
 }
 
-void KioskView::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        playSound(settings_->windowClickedSound);
-
-    QWebEngineView::mousePressEvent(event);
-}
-
 void KioskView::playSound(const QUrl &sound)
 {
     if (player_)
         player_->play(sound);
+}
+
+bool KioskView::eventFilter(QObject *object, QEvent *event)
+{
+    Q_UNUSED(object);
+
+    // See https://bugreports.qt.io/browse/QTBUG-43602 for mouse events
+    // seemingly not working with QWebEngineView.
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+    case QEvent::TouchBegin:
+        playSound(settings_->windowClickedSound);
+        break;
+
+    default:
+        break;
+    }
+
+    return false;
 }
 
 QWebEngineView *KioskView::createWindow(QWebEnginePage::WebWindowType /*type*/)

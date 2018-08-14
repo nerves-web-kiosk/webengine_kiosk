@@ -2,14 +2,15 @@
 #include "Kiosk.h"
 #include "KioskProgress.h"
 #include "KioskView.h"
+#include "Blanking.h"
 
 #include <QMenu>
 #include <QMenuBar>
 #include <QInputDialog>
-#include <QLabel>
+#include <QApplication>
 
 KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
-    QMainWindow(),
+    QWidget(),
     kiosk_(kiosk),
     settings_(settings),
     view_(nullptr),
@@ -18,18 +19,13 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     setMinimumWidth(320);
     setMinimumHeight(200);
 
-    QWidget *centralWidget = new QWidget(this);
-
-    blank_ = new QLabel(centralWidget);
-    blank_->setAlignment(Qt::AlignCenter);
+    blank_ = new Blanking(this);
     blank_->setStyleSheet(QString("background: %1").arg(settings->backgroundColor.name()));
     if (!settings->blankImage.isEmpty())
         blank_->setPixmap(settings->blankImage);
 
-    progress_ = new KioskProgress(centralWidget);
+    progress_ = new KioskProgress(this);
     progress_->hide();
-
-    setCentralWidget(centralWidget);
 
     QAction* tempAction = new QAction(this);
     tempAction->setShortcut(QKeySequence::Quit);
@@ -37,6 +33,7 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     connect(tempAction, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
     addAction(tempAction);
 
+#if 0
     if (settings->debugMenuEnabled) {
         QMenu *debugMenu = menuBar()->addMenu(tr("&Debug"));
         QAction *action = new QAction(tr("Run &Javascript"), this);
@@ -46,6 +43,7 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
         connect(action, &QAction::triggered, this, &KioskWindow::doGotoURLDialog);
         debugMenu->addAction(action);
     }
+#endif
 }
 
 KioskWindow::~KioskWindow()
@@ -56,17 +54,27 @@ void KioskWindow::setView(KioskView *view)
 {
     view_ = view;
     view_->setVisible(showingBrowser_);
-    view_->setParent(centralWidget());
+    //view_->setParent(this);
     view_->stackUnder(progress_);
-    QSize sz = centralWidget()->size();
+    QSize sz = size();
     view_->setGeometry(0, 0, sz.width(), sz.height());
+    if (showingBrowser_) {
+        view_->setEnabled(true);
+        view_->setFocus();
+    }
 }
 
 void KioskWindow::setBrowserVisible(bool enabled)
 {
     showingBrowser_ = enabled;
-    if (view_)
+    if (view_) {
         view_->setVisible(enabled);
+        view_->setEnabled(enabled);
+        blank_->setEnabled(!enabled);
+        if (enabled) {
+            view_->setFocus();
+        }
+    }
 }
 
 void KioskWindow::showProgress(int percent)
@@ -92,10 +100,7 @@ void KioskWindow::hideBrowser()
 
 void KioskWindow::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
-
-    QSize sz = centralWidget()->size();
-
+    QSize sz = event->size();
     blank_->setGeometry(0, 0, sz.width(), sz.height());
     if (view_)
         view_->setGeometry(0, 0, sz.width(), sz.height());
@@ -118,7 +123,7 @@ void KioskWindow::doGotoURLDialog()
 {
     bool ok;
     QString uri = QInputDialog::getText(this, tr("Kiosk"),
-                                         tr("Enter a URL:"), QLineEdit::Normal, "https://youtube.com/", &ok);
+                                         tr("Enter a URL:"), QLineEdit::Normal, "https://elixir-lang.org/", &ok);
     if (ok && !uri.isEmpty())
         kiosk_->goToUrl(uri);
 }

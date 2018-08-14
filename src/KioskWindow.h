@@ -1,7 +1,7 @@
 #ifndef KIOSK_WINDOW_H
 #define KIOSK_WINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QtWebEngineCore>
 
 #include "KioskSettings.h"
@@ -9,9 +9,13 @@
 class Kiosk;
 class KioskProgress;
 class KioskView;
-class QLabel;
+class Blanking;
 
-class KioskWindow : public QMainWindow
+// NOTE: This is not a QMainWindow even though that would make a lot of sense.
+//       For unknown reasons, QMainWindow and QWebEngineView interact in some
+//       way that makes touch events not work on the Raspberry Pi.
+
+class KioskWindow : public QWidget
 {
     Q_OBJECT
 
@@ -37,14 +41,11 @@ private slots:
     void doGotoURLDialog();
 
 private:
-    int computedScreen();
-
-private:
     Kiosk *kiosk_;
     const KioskSettings *settings_;
 
     KioskProgress *progress_;
-    QLabel *blank_;
+    Blanking *blank_;
     KioskView *view_;
 
     bool showingBrowser_;

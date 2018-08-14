@@ -3,8 +3,7 @@
 
 #include <QtWebEngineWidgets/QWebEnginePage>
 #include <QtWebEngineWidgets/QWebEngineView>
-
-#include <qplayer.h>
+#include "qplayer.h"
 
 struct KioskSettings;
 
@@ -20,7 +19,7 @@ public:
     void playSound(const QUrl &sound);
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+    bool eventFilter(QObject *object, QEvent *event);
 
 private slots:
     void handleWindowCloseRequested();

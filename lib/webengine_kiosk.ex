@@ -22,7 +22,9 @@ defmodule WebengineKiosk do
   end
 
   @moduledoc """
-  Start up and control a browser.
+  Control a fullscreen web browser using Elixir for use in a kiosk.
+
+
 
   """
 
@@ -36,6 +38,7 @@ defmodule WebengineKiosk do
   * `blank_image: path` - specify a path to an image for when the screen is blanked
   * `fullscreen: boolean` - show fullscreen
   * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
+  * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend. This is only a hint.
   * `progress: boolean` - show a progress bar when loading pages
   * `sounds: boolean` - play sounds on clicks
 
@@ -43,7 +46,6 @@ defmodule WebengineKiosk do
 
   * `monitor: index` - select the monitor for the webbrowser (0, 1, etc.)
   * `clear_cache: boolean`
-  * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend to use
   * `proxy_enable: boolean` - enable/disable proxy support
   * `proxy_system: ` -
   * `proxy_host: hostname` - the host to connect to for using a proxy

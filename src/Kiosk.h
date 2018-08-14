@@ -33,7 +33,7 @@ private slots:
     void completeInit();
 
 private:
-    void moveToMonitor();
+    QRect calculateWindowRect() const;
 
 private:
     const KioskSettings *settings_;
