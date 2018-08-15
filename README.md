@@ -1,14 +1,29 @@
 # WebengineKiosk
 
-Launch and control a fullscreen webbrowser from Elixir. This is intended for use
+Launch and control a fullscreen web browser from Elixir. This is intended for
+kiosks running [Nerves](https://nerves-project.org/) but can be used anywhere
+you need to show a user a local web-based UI.
 
 Here's an example run:
 
 ```elixir
 iex> {:ok, kiosk} = WebengineKiosk.start_link(fullscreen: false)
-{:ok, #PID<0.180.0>}
-iex> WebengineKiosk.go_to_url("https://yahoo.com/")
-:ok
+iex> WebengineKiosk.go_to_url(kiosk, "https://elixir-lang.org/")
+iex> WebengineKiosk.stop(kiosk)
+```
+
+It can also be linked into your application's supervision tree:
+
+```elixir
+# Example childspecs
+
+   [
+      {WebengineKiosk, {[homepage: "https://somewhere.com", background: "black"], name: MyKiosk}}
+   ]
+
+# Somewhere else in your code
+
+WebengineKiosk.run_javascript(Display, "window.alert('Hello, Elixir!')")
 ```
 
 ## Kiosk options
