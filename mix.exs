@@ -49,7 +49,7 @@ defmodule WebengineKiosk.MixProject do
         "Makefile"
       ],
       maintainers: ["Frank Hunleth", "Justin Schneck"],
-      licenses: ["TBD"],
+      licenses: ["Apache-2.0", "LGPL-3.0-only"],
       links: %{"GitHub" => "https://github.com/fhunleth/webengine_kiosk"}
     ]
   end
