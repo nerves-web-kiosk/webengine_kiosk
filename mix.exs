@@ -41,6 +41,8 @@ defmodule WebengineKiosk.MixProject do
         "src/kiosk.pro",
         "src/ui.qrc",
         "src/ui",
+        "src/qplayer.cpp",
+        "src/qplayer.h",
         "test",
         "mix.exs",
         "README.md",
