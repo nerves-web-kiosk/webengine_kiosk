@@ -1,7 +1,10 @@
+# Override if using a specific Qt toolkit version
+QMAKE ?= qmake
+
 all: submake
 
 src/Makefile:
-	cd src && qmake kiosk.pro
+	cd src && $(QMAKE) kiosk.pro
 
 submake: src/Makefile
 	+$(MAKE) -C src install

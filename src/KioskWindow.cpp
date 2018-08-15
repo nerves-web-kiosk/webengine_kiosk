@@ -23,6 +23,7 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     blank_->setStyleSheet(QString("background: %1").arg(settings->backgroundColor.name()));
     if (!settings->blankImage.isEmpty())
         blank_->setPixmap(settings->blankImage);
+    connect(blank_, SIGNAL(mousePressed()), SIGNAL(wakeup()));
 
     progress_ = new KioskProgress(this);
     progress_->hide();

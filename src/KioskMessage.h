@@ -15,7 +15,8 @@ public:
         Progress = 4,
         FinishedLoadingPage = 5,
         URLChanged = 6,
-        Blank = 7
+        Blank = 7,
+        Wakeup = 8
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);
@@ -32,6 +33,7 @@ public:
     static KioskMessage loadingPageMessage();
     static KioskMessage finishedLoadingPageMessage();
     static KioskMessage urlChanged(const QUrl &url);
+    static KioskMessage wakeup();
 
 private:
     const QByteArray rawMessage_;

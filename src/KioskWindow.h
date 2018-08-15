@@ -29,6 +29,9 @@ public:
     void showProgress(int percent);
     void hideProgress();
 
+signals:
+    void wakeup();
+
 public slots:
     void showBrowser();
     void hideBrowser();

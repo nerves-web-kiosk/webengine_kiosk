@@ -20,6 +20,8 @@ Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
 {
     // Set up the UI
     window_ = new KioskWindow(this, settings);
+    connect(window_, SIGNAL(wakeup()), SLOT(handleWakeup()));
+
     window_->setGeometry(calculateWindowRect());
 }
 
@@ -44,20 +46,6 @@ void Kiosk::init()
     if (settings_->hideCursor)
         QApplication::setOverrideCursor(Qt::BlankCursor);
 
-    completeInit();
-
-    if (settings_->fullscreen)
-        window_->showFullScreen();
-    else
-        window_->show();
-
-    // Do the heavy lifting of starting up the webbrowser on the next
-    // pass through the event loop.
-    //QTimer::singleShot(100, this, SLOT(completeInit()));
-}
-
-void Kiosk::completeInit()
-{
     // Set up communication with Elixir
     coms_ = new ElixirComs(this);
     connect(coms_, SIGNAL(messageReceived(KioskMessage)), SLOT(handleRequest(KioskMessage)));
@@ -72,8 +60,12 @@ void Kiosk::completeInit()
     connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
     window_->setView(view_);
-    window_->showFullScreen();
     view_->load(settings_->homepage);
+
+    if (settings_->fullscreen)
+        window_->showFullScreen();
+    else
+        window_->show();
 }
 
 void Kiosk::goToUrl(const QUrl &url)
@@ -144,6 +136,12 @@ void Kiosk::finishLoading()
     // 3. Focus window and click into it to stimulate event loop after signal handling
     QApplication::setActiveWindow(window_);
     window_->focusWidget();
+}
+
+void Kiosk::handleWakeup()
+{
+    coms_->send(KioskMessage::wakeup());
+    view_->playSound(settings_->windowClickedSound);
 }
 
 void Kiosk::urlChanged(const QUrl &url)

@@ -1,22 +1,18 @@
 defmodule WebengineKiosk do
   use GenServer
-  require Logger
+  alias WebengineKiosk.{Message, Options}
 
-  @msg_go_to_url 1
-  @msg_run_javascript 2
-  @msg_loading_page 3
-  @msg_progress 4
-  @msg_finished_loading_page 5
-  @msg_url_changed 6
-  @msg_blank 7
+  require Logger
 
   def child_spec({opts, genserver_opts}) do
     id = genserver_opts[:id] || __MODULE__
+
     %{
       id: id,
       start: {__MODULE__, :start_link, [opts, genserver_opts]}
     }
   end
+
   def child_spec(opts) do
     child_spec({opts, []})
   end
@@ -66,7 +62,7 @@ defmodule WebengineKiosk do
   """
   @spec start_link(Keyword.t(), GenServer.options()) :: {:ok, pid} | {:error, term}
   def start_link(args, genserver_opts \\ []) do
-    with :ok <- check_args(args) do
+    with :ok <- Options.check_args(args) do
       GenServer.start_link(__MODULE__, args, genserver_opts)
     end
   end
@@ -81,10 +77,32 @@ defmodule WebengineKiosk do
 
   @doc """
   Blank the screen
+
+  The web browser will be replaced by a screen with the `blank_image`. If someone clicks or taps on the screen
+  then a wakeup message will be sent. While the screen is in the blank state, it can still accept
+  requests to go to other URLs.
   """
-  @spec blank(GenServer.server(), boolean()) :: :ok
-  def blank(server, yes) do
-    GenServer.call(server, {:blank, yes})
+  @spec blank(GenServer.server()) :: :ok
+  def blank(server) do
+    GenServer.call(server, {:blank, true})
+  end
+
+  @doc """
+  Unblank the screen
+
+  Show the web browser again.
+  """
+  @spec unblank(GenServer.server()) :: :ok
+  def unblank(server) do
+    GenServer.call(server, {:blank, false})
+  end
+
+  @doc """
+  Request that the browser go to the homepage.
+  """
+  @spec go_home(GenServer.server()) :: :ok | {:error, term}
+  def go_home(server) do
+    GenServer.call(server, :go_home)
   end
 
   @doc """
@@ -105,7 +123,14 @@ defmodule WebengineKiosk do
 
   def init(args) do
     cmd = Path.join(:code.priv_dir(:webengine_kiosk), "kiosk")
-    cmd_args = Enum.flat_map(args, &to_cmd_option/1)
+
+    all_options = Options.add_defaults(args)
+
+    cmd_args =
+      all_options
+      |> Enum.flat_map(fn {key, value} -> ["--#{key}", to_string(value)] end)
+
+    homepage = Keyword.get(all_options, :homepage)
 
     port =
       Port.open({:spawn_executable, cmd}, [
@@ -116,101 +141,40 @@ defmodule WebengineKiosk do
         :exit_status
       ])
 
-    {:ok, port}
+    {:ok, %{port: port, homepage: homepage}}
+  end
+
+  def handle_call(:go_home, _from, state) do
+    send_port(state, Message.go_to_url(state.homepage))
   end
 
   def handle_call({:go_to_url, url}, _from, state) do
-    msg = <<@msg_go_to_url, url::binary>>
-    send(state, {self(), {:command, msg}})
+    send_port(state, Message.go_to_url(url))
     {:reply, :ok, state}
   end
 
   def handle_call({:run_javascript, code}, _from, state) do
-    msg = <<@msg_run_javascript, code::binary>>
-    send(state, {self(), {:command, msg}})
+    send_port(state, Message.run_javascript(code))
     {:reply, :ok, state}
   end
 
   def handle_call({:blank, yes}, _from, state) do
-    msg = blank_message(yes)
-    send(state, {self(), {:command, msg}})
+    send_port(state, Message.blank(yes))
     {:reply, :ok, state}
   end
 
-  defp blank_message(true), do: <<@msg_blank, 1>>
-  defp blank_message(false), do: <<@msg_blank, 0>>
-
-  def handle_info({_, {:data, msg}}, state) do
-    dispatch_message(msg, state)
+  def handle_info({_, {:data, raw_message}}, state) do
+    msg = Message.decode(raw_message)
+    Logger.debug("webengine_kiosk: received #{inspect(msg)}")
     {:noreply, state}
   end
 
   def handle_info({state, {:exit_status, status}}, state) do
-    Logger.error("The kiosk exited with status #{status}")
+    Logger.error("webengine_kiosk: unexpected exit from port: #{status}")
     {:stop, :normal, state}
   end
 
-  defp dispatch_message(<<@msg_progress, value>>, _state) do
-    Logger.debug("Progress #{value}")
-  end
-
-  defp dispatch_message(<<@msg_url_changed, url::binary>>, _state) do
-    Logger.debug("URL changed to #{url}")
-  end
-
-  defp dispatch_message(<<@msg_loading_page>>, _state) do
-    Logger.debug("Starting to load page")
-  end
-
-  defp dispatch_message(<<@msg_finished_loading_page>>, _state) do
-    Logger.debug("Finished loading page")
-  end
-
-  defp dispatch_message(<<msg_type, _payload::binary>>, _state) do
-    Logger.error("Received unknown message from kiosk port. Type=#{msg_type}")
-  end
-
-  defp to_cmd_option({key, value}) do
-    ["--#{key}", to_string(value)]
-  end
-
-  @arguments [
-    :clear_cache,
-    :homepage,
-    :monitor,
-    :opengl,
-    :proxy_enable,
-    :proxy_system,
-    :proxy_host,
-    :proxy_port,
-    :proxy_username,
-    :proxy_password,
-    :stay_on_top,
-    :progress,
-    :sounds,
-    :window_clicked_sound,
-    :link_clicked_sound,
-    :hide_cursor,
-    :javascript,
-    :javascript_can_open_windows,
-    :debug_menu,
-    :fullscreen,
-    :width,
-    :height,
-    :uid,
-    :gid,
-    :blank_image,
-    :background_color
-  ]
-
-  defp check_args(args) do
-    case Enum.find(args, &invalid_arg?/1) do
-      nil -> :ok
-      arg -> {:error, "Unknown option #{inspect(arg)}"}
-    end
-  end
-
-  defp invalid_arg?({arg, _value}) do
-    !(arg in @arguments)
+  defp send_port(state, message) do
+    send(state.port, {self(), {:command, message}})
   end
 end

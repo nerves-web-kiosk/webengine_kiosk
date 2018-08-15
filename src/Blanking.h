@@ -5,11 +5,14 @@
 
 class Blanking : public QLabel
 {
+    Q_OBJECT
 public:
-    explicit Blanking(QWidget *parent);
+    explicit Blanking(QWidget *parent = nullptr);
+
+signals:
+    void mousePressed();
 
 protected:
-    void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
 };
 

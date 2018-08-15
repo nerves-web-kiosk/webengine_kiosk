@@ -49,3 +49,9 @@ KioskMessage KioskMessage::urlChanged(const QUrl &url)
     QByteArray str = url.toString().toUtf8();
     return KioskMessage(KioskMessage::URLChanged, str);
 }
+
+KioskMessage KioskMessage::wakeup()
+{
+    char message[1] = {KioskMessage::Wakeup};
+    return KioskMessage(message, sizeof(message));
+}

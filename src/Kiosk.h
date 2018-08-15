@@ -30,7 +30,7 @@ private slots:
     void setProgress(int p);
     void finishLoading();
 
-    void completeInit();
+    void handleWakeup();
 
 private:
     QRect calculateWindowRect() const;
