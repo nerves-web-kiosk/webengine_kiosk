@@ -12,6 +12,7 @@ Here's an example run:
 ```elixir
 iex> {:ok, kiosk} = WebengineKiosk.start_link(fullscreen: false)
 iex> WebengineKiosk.go_to_url(kiosk, "https://elixir-lang.org/")
+iex> WebengineKiosk.run_javascript(Display, "window.alert('Hello, Elixir!')")
 iex> WebengineKiosk.stop(kiosk)
 ```
 
