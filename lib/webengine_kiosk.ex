@@ -27,8 +27,8 @@ defmodule WebengineKiosk do
   @doc """
   Start the kiosk.
 
-  The kiosk starts fullscreen and goes to a default local web page. To change this,
-  set one or more options:
+  The kiosk starts fullscreen and goes to a default local web page. To change
+  this, set one or more options:
 
   * `background_color: color` - specify a background color as #RRGGBB or by name
   * `blank_image: path` - specify a path to an image for when the screen is blanked
@@ -78,9 +78,10 @@ defmodule WebengineKiosk do
   @doc """
   Blank the screen
 
-  The web browser will be replaced by a screen with the `blank_image`. If someone clicks or taps on the screen
-  then a wakeup message will be sent. While the screen is in the blank state, it can still accept
-  requests to go to other URLs.
+  The web browser will be replaced by a screen with the `blank_image`. If
+  someone clicks or taps on the screen then a wakeup message will be sent.
+  While the screen is in the blank state, it can still accept requests to go to
+  other URLs.
   """
   @spec blank(GenServer.server()) :: :ok
   def blank(server) do

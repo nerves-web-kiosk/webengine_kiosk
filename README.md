@@ -32,8 +32,37 @@ Doc all of the options here!
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `webengine_kiosk` to your list of dependencies in `mix.exs`:
+`WebengineKiosk` requires [Qt](http://qt.io/). It is likely that your package
+manager already has a Qt package.
+
+On Debian or Ubuntu:
+
+```sh
+sudo apt install qtwebengine5-dev
+```
+
+On OSX:
+
+```sh
+brew install qt
+```
+
+If you are installing Qt manually, then the first time that you run `mix`,
+you'll need to point to the installation location. If you don't, you'll either
+get an error that `qmake` isn't found or you'll being using your system's
+version of Qt. Here's an example commandline:
+
+```sh
+QMAKE=~/Qt/5.11.1/gcc_64/bin/qmake mix compile
+```
+
+Finally, if you're using Nerves, you'll need a Nerves system that includes Qt.
+Take a look at
+[kiosk_system_rpi3](https://github.com/LeToteTeam/kiosk_system_rpi3) for an
+example.
+
+Once you've done all that, go ahead and add `webengine_kiosk` to your `mix.exs`
+dependencies like normal:
 
 ```elixir
 def deps do
@@ -43,6 +72,6 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/webengine_kiosk](https://hexdocs.pm/webengine_kiosk).
+Documentation can be found at
+[https://hexdocs.pm/webengine_kiosk](https://hexdocs.pm/webengine_kiosk).
+
