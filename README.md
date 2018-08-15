@@ -1,5 +1,8 @@
 # WebengineKiosk
 
+[![CircleCI](https://circleci.com/gh/fhunleth/webengine_kiosk.svg?style=svg)](https://circleci.com/gh/fhunleth/webengine_kiosk)
+[![Hex version](https://img.shields.io/hexpm/v/webengine_kiosk.svg "Hex version")](https://hex.pm/packages/webengine_kiosk)
+
 Launch and control a fullscreen web browser from Elixir. This is intended for
 kiosks running [Nerves](https://nerves-project.org/) but can be used anywhere
 you need to show a user a local web-based UI.
@@ -38,7 +41,7 @@ manager already has a Qt package.
 On Debian or Ubuntu:
 
 ```sh
-sudo apt install qtwebengine5-dev
+sudo apt install qtwebengine5-dev qtmultimedia5-dev qt5-default
 ```
 
 On OSX:

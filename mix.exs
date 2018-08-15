@@ -5,13 +5,14 @@ defmodule WebengineKiosk.MixProject do
     [
       app: :webengine_kiosk,
       version: "0.1.0",
-      description: description(),
-      package: package(),
-      compilers: [:elixir_make | Mix.compilers()],
-      make_clean: ["clean"],
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      compilers: [:elixir_make | Mix.compilers()],
+      make_clean: ["clean"],
+      deps: deps(),
+      docs: [extras: ["README.md"]],
+      description: description(),
+      package: package()
     ]
   end
 
@@ -23,15 +24,34 @@ defmodule WebengineKiosk.MixProject do
   end
 
   defp description do
-    "Qt WebEngine-based kiosk"
+    "Display and control web pages on a local fullscreen browser"
   end
 
   defp package do
-    %{
+    [
+      files: [
+        "lib",
+        "src/main.cpp",
+        "src/Blanking.cpp",
+        "src/Blanking.h",
+        "src/ElixirComs.cpp",
+        "src/ElixirComs.h",
+        "src/Kiosk*.cpp",
+        "src/Kiosk*.h",
+        "src/kiosk.pro",
+        "src/ui.qrc",
+        "src/ui",
+        "test",
+        "mix.exs",
+        "README.md",
+        "LICENSE",
+        "CHANGELOG.md",
+        "Makefile"
+      ],
       maintainers: ["Frank Hunleth", "Justin Schneck"],
       licenses: ["TBD"],
       links: %{"GitHub" => "https://github.com/fhunleth/webengine_kiosk"}
-    }
+    ]
   end
 
   defp deps do

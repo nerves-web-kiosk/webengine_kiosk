@@ -1,11 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>ui/default.html</file>
-        <file>ui/link-clicked.mp3</file>
-        <file>ui/link-clicked.ogg</file>
         <file>ui/link-clicked.wav</file>
-        <file>ui/window-clicked.mp3</file>
-        <file>ui/window-clicked.ogg</file>
         <file>ui/window-clicked.wav</file>
     </qresource>
 </RCC>
