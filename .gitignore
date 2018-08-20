@@ -23,7 +23,7 @@ erl_crash.dump
 webengine_kiosk-*.tar
 
 # C++
-/priv/
+/priv/kiosk*
 /src/*.o
 /src/moc_*
 /src/qrc_*
