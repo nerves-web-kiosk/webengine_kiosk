@@ -36,8 +36,9 @@ Doc all of the options here!
 
 ## Installation
 
-`WebengineKiosk` requires [Qt](http://qt.io/). It is likely that your package
-manager already has a Qt package.
+`WebengineKiosk` requires [Qt](http://qt.io/) versions 5.10 or later (it may
+work on earlier versions, but we haven't tested it). It is likely that your
+package manager already has a Qt package.
 
 On Debian or Ubuntu:
 
