@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>ui/default.html</file>
         <file>ui/link-clicked.wav</file>
         <file>ui/window-clicked.wav</file>
     </qresource>
