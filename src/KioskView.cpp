@@ -51,7 +51,7 @@ bool KioskView::eventFilter(QObject *object, QEvent *event)
     // seemingly not working with QWebEngineView.
     switch (event->type()) {
     case QEvent::MouseButtonPress:
-    case QEvent::TouchBegin:
+    //case QEvent::TouchBegin:
         playSound(settings_->windowClickedSound);
         break;
 
