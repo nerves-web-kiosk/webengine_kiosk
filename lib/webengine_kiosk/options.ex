@@ -51,8 +51,10 @@ defmodule WebengineKiosk.Options do
 
   defp defaults() do
     # This is a runtime function so that the system can be queried for some options
+    homepage_file = Application.app_dir(:webengine_kiosk, "priv/www/index.html")
+
     [
-      homepage: Application.app_dir(:webengine_kiosk, "priv/www/index.html"),
+      homepage: "file://" <> homepage_file,
       fullscreen: true,
       background_color: "black"
     ]
