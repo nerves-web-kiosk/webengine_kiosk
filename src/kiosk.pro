@@ -1,6 +1,8 @@
 QT       = core gui network widgets multimedia webenginewidgets
 
 CONFIG += console link_pkgconfig c++11
+CONFIG -= app_bundle
+
 TARGET = kiosk
 TEMPLATE = app
 
