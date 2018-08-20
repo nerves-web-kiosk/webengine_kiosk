@@ -147,6 +147,7 @@ defmodule WebengineKiosk do
 
   def handle_call(:go_home, _from, state) do
     send_port(state, Message.go_to_url(state.homepage))
+    {:reply, :ok, state}
   end
 
   def handle_call({:go_to_url, url}, _from, state) do
