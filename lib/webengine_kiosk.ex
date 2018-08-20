@@ -173,7 +173,7 @@ defmodule WebengineKiosk do
     {:noreply, state}
   end
 
-  def handle_info({state, {:exit_status, status}}, state) do
+  def handle_info({port, {:exit_status, status}}, %{port: port} = state) do
     Logger.error("webengine_kiosk: unexpected exit from port: #{status}")
     {:stop, :normal, state}
   end
