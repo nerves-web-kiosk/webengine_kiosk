@@ -123,7 +123,8 @@ defmodule WebengineKiosk do
   end
 
   def init(args) do
-    cmd = Path.join(:code.priv_dir(:webengine_kiosk), "kiosk")
+    priv_dir = :code.priv_dir(:webengine_kiosk)
+    cmd = Path.join(priv_dir, "kiosk")
 
     all_options = Options.add_defaults(args)
 
@@ -136,6 +137,7 @@ defmodule WebengineKiosk do
     port =
       Port.open({:spawn_executable, cmd}, [
         {:args, cmd_args},
+        {:cd, priv_dir},
         {:packet, 2},
         :use_stdio,
         :binary,

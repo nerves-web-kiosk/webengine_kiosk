@@ -1,6 +1,7 @@
 #include "KioskSettings.h"
 #include <QCommandLineParser>
 #include <QVariant>
+#include <QFileInfo>
 
 static bool toBool(const QString &v)
 {
@@ -16,7 +17,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
 
     QList<QCommandLineOption> options = QList<QCommandLineOption>({
             {"clear_cache", "Clear cached request data."},
-            {"homepage", "Set starting url", "url", "qrc:///ui/default.html"},
+            {"homepage", "Set starting url", "url", ""},
             {"monitor", "Display window on the <n>th monitor.", "n", "0"},
             {"fullscreen", "Run kiosk fullscreen", "true"},
             {"width", "When not in fullscreen mode, this is the window width", "pixels", "1024"},
@@ -47,7 +48,16 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     parser.process(app);
 
     clearCache = toBool(parser.value("clear_cache"));
-    homepage = QUrl(parser.value("homepage"));
+    QString homePageAsString = parser.value("homepage");
+    if (!homePageAsString.isEmpty()) {
+        homepage = QUrl(homePageAsString);
+    } else {
+        // The relative path here works both from being called by
+        // Elixir and in QtCreator.
+        QFileInfo fi("../priv/www/index.html");
+        QString homepageAsUri = QString("file://%1").arg(fi.canonicalFilePath());
+        homepage = QUrl(homepageAsUri);
+    }
     monitor = parser.value("monitor").toInt();
     fullscreen = toBool(parser.value("fullscreen"));
     width = parser.value("width").toInt();
