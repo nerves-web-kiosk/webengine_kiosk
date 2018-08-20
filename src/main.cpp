@@ -1,8 +1,6 @@
 #include <QApplication>
 
 #include <err.h>
-#include <grp.h>
-#include <pwd.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -10,13 +8,16 @@
 #include "Kiosk.h"
 #include "KioskSettings.h"
 
+#include <grp.h>
+#include <pwd.h>
+
 static uid_t stringToUid(const char *s)
 {
     if (*s == '\0')
         return 0;
 
     char *endptr;
-    uid_t uid = (uid_t) strtoul(s, &endptr, 0);
+    uid_t uid = static_cast<uid_t>(strtoul(s, &endptr, 0));
     if (*endptr != '\0') {
         struct passwd *passwd = getpwnam(s);
         if (!passwd)
@@ -34,7 +35,7 @@ static gid_t stringToGid(const char *s)
         return 0;
 
     char *endptr;
-    gid_t gid = (gid_t) strtoul(s, &endptr, 0);
+    gid_t gid = static_cast<gid_t>(strtoul(s, &endptr, 0));
     if (*endptr != '\0') {
         struct group *group = getgrnam(s);
         if (!group)
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
     // will report them.
     gid_t gid = 0;
     uid_t uid = 0;
+
     for (int i = 1; i < argc - 1; i++) {
         if (strcmp(argv[i], "--gid") == 0) {
             gid = stringToGid(argv[i + 1]);

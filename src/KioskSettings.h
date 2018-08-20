@@ -3,6 +3,7 @@
 
 #include <QUrl>
 #include <QColor>
+#include <unistd.h>
 
 class QCoreApplication;
 

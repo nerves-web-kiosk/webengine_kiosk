@@ -1,5 +1,7 @@
 #include "ElixirComs.h"
 #include <QSocketNotifier>
+
+#include <errno.h>
 #include <unistd.h>
 #include <sys/uio.h>
 #include <arpa/inet.h>

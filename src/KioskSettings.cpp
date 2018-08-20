@@ -56,7 +56,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     proxyEnabled = toBool(parser.value("proxy_enable"));
     proxySystem = toBool(parser.value("proxy_system"));
     proxyHostname = parser.value("proxy_host");
-    proxyPort = (quint16) parser.value("proxy_host").toUInt();
+    proxyPort = static_cast<quint16>(parser.value("proxy_host").toUInt());
     proxyUsername = parser.value("proxy_username");
     proxyPassword = parser.value("proxy_password");
     stayOnTop = toBool(parser.value("stay_on_top"));
