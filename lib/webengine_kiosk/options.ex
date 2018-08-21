@@ -28,6 +28,8 @@ defmodule WebengineKiosk.Options do
     :background_color
   ]
 
+  @moduledoc false
+
   @doc """
   Go through all of the arguments and check for bad ones.
   """

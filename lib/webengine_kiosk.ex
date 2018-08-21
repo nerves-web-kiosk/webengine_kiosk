@@ -43,7 +43,7 @@ defmodule WebengineKiosk do
 
   Untested:
 
-  * `monitor: index` - select the monitor for the webbrowser (0, 1, etc.)
+  * `monitor: index` - select the monitor for the web browser (0, 1, etc.)
   * `clear_cache: boolean`
   * `proxy_enable: boolean` - enable/disable proxy support
   * `proxy_system: ` -
