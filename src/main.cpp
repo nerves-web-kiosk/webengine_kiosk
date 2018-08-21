@@ -70,12 +70,14 @@ int main(int argc, char *argv[])
     // will report them.
     gid_t desired_gid = 0;
     uid_t desired_uid = 0;
+    const char *desired_user = nullptr;
 
     for (int i = 1; i < argc - 1; i++) {
         if (strcmp(argv[i], "--gid") == 0) {
             desired_gid = stringToGid(argv[i + 1]);
             i++;
         } else if (strcmp(argv[i], "--uid") == 0) {
+            desired_user = argv[i + 1];
             desired_uid = stringToUid(argv[i + 1]);
             i++;
         } else if (strcmp(argv[i], "--opengl") == 0) {
@@ -96,7 +98,8 @@ int main(int argc, char *argv[])
         }
         if (desired_uid == 0) {
             warnx("Running a web browser with uid == 0 is not allowed. Looking for a kiosk user.");
-            desired_uid = stringToUid("kiosk");
+            desired_user = "kiosk";
+            desired_uid = stringToUid(desired_user);
         }
 
         if (desired_gid == 0 || desired_uid == 0)
@@ -105,8 +108,13 @@ int main(int argc, char *argv[])
 
     // Drop/change privilege if requested
     // See https://wiki.sei.cmu.edu/confluence/display/c/POS36-C.+Observe+correct+revocation+order+while+relinquishing+privileges
-    if (desired_gid > 0 && setgid(desired_gid) < 0)
-        err(EXIT_FAILURE, "setgid(%d) failed", desired_gid);
+    if (desired_gid > 0) {
+        if (desired_user && initgroups(desired_user, desired_gid) < 0)
+            err(EXIT_FAILURE, "initgroups(%s, %d) failed", desired_user, desired_gid);
+
+        if (setgid(desired_gid) < 0)
+            err(EXIT_FAILURE, "setgid(%d) failed", desired_gid);
+    }
 
     if (desired_uid > 0 && setuid(desired_uid) < 0)
         err(EXIT_FAILURE, "setuid(%d) failed", desired_uid);
