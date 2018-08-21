@@ -1,15 +1,17 @@
 #include <QApplication>
+#include <QStandardPaths>
+#include <QDir>
 
 #include <err.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
+#include <grp.h>
+#include <pwd.h>
 
 #include "Kiosk.h"
 #include "KioskSettings.h"
-
-#include <grp.h>
-#include <pwd.h>
 
 static uid_t stringToUid(const char *s)
 {
@@ -61,6 +63,20 @@ static void setOpenGLMode(const char *mode)
     } else {
         warnx("OpenGL: Default");
     }
+}
+
+static void checkPermissions()
+{
+    // Check permissions on directories since the error messages from
+    // Chromium and QtWebEngine are pretty hard to debug unless you
+    // run strace. Maybe this will help someone.
+    struct stat st;
+    if (stat("/dev/shm", &st) < 0 || (st.st_mode & 01777) != 01777)
+        errx(EXIT_FAILURE, "Check that \"/dev/shm\" exists and has mode 1777 (got %o)", st.st_mode & 01777);
+
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    if (!QDir().mkpath(path))
+        errx(EXIT_FAILURE, "Check permissions on directories leading up to '%s' or specify --data_dir", qPrintable(path));
 }
 
 int main(int argc, char *argv[])
@@ -131,6 +147,9 @@ int main(int argc, char *argv[])
     // Copy in the uid/gid settings for posterity.
     settings.uid = desired_uid;
     settings.gid = desired_gid;
+
+    if (desired_gid || desired_uid)
+        checkPermissions();
 
     Kiosk kiosk(&settings);
     kiosk.init();
