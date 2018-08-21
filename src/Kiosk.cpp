@@ -90,13 +90,11 @@ void Kiosk::reload()
 
 void Kiosk::goBack()
 {
-    qDebug("back");
     view_->back();
 }
 
 void Kiosk::goForward()
 {
-    qDebug("forward");
     view_->forward();
 }
 
