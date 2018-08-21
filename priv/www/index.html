@@ -1,37 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Nerves</title>
+    <title>webengine_kiosk</title>
     <link rel="stylesheet" href="assets/style.css">
-  </head>
+</head>
 
-  <body>
+<body>
     <div class="content">
-      <div class="header">
-        <h1 class="center">webengine_kiosk</h1>
-      </div>
-      <span class="topic left">Keyboard shortcuts</span>
-      <div class="terminal center">
-        <span>ctrl-q = quit</span>
-      </div>
-      <span class="topic left">Next steps in IEX</span>
-      <div class="terminal center">
-        <span>WebengineKiosk.go_to_home(pid_or_name)</span>
-        <span>WebengineKiosk.go_to_url(pid_or_name, "https://elixir-lang.org")</span>
-        <span>WebengineKiosk.run_javascript(pid_or_name, "console.log('hello')")</span>
-      </div>
-      <span class="topic left">Useful links</span>
-      <ul>
-        <li>
-            <a href="https://hexdocs.pm/webengine_kiosk/readme.html">webengine_kiosk documentation</a>
-        </li>
-      </ul>
+        <div class="header">
+            <h1 class="center">webengine_kiosk</h1>
+        </div>
+        <div class="topic center">Keyboard shortcuts</div>
+        <div class="terminal center">
+            <div>Ctrl-Q or ⌘Q = quit</div>
+            <div>F5 = reload</div>
+        </div>
+        <div class="topic center">Next steps in IEx</div>
+        <div class="terminal center">
+            <div>iex&gt; {:ok, browser} = WebengineKiosk.start_link([fullscreen: false, homepage: "https://nerves-project.org/"]) </div>
+            <div>{:ok, #PID&lt;0.184.0>}</div>
+            <div>iex&gt; WebengineKiosk.go_to_url(browser, "https://elixir-lang.org")</div>
+            <div>:ok</div>
+            <div>iex&gt; WebengineKiosk.go_home(browser)</div>
+            <div>:ok</div>
+            <div>iex&gt; WebengineKiosk.run_javascript(browser, "window.alert('Hello, Elixir!')")</div>
+            <div>:ok</div>
+            <div>iex&gt; WebengineKiosk.stop(browser)</div>
+            <div>:ok</div>
+        </div>
+        <div class="topic center">Useful links</div>
+        <div class="center">
+            <div>
+                <a href="https://hexdocs.pm/webengine_kiosk/readme.html">webengine_kiosk documentation</a>
+            </div>
+            <div>
+                <a href="https://github.com/fhunleth/webengine_kiosk">webengine_kiosk source</a>
+            </div>
+        </div>
     </div>
-  </body>
+</body>
+
 </html>
