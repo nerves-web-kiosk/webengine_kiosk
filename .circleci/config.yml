@@ -5,7 +5,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/elixir:1.6.6
+      - image: circleci/elixir:1.7
     working_directory: ~/repo
     steps:
       - checkout
@@ -14,4 +14,5 @@ jobs:
       - run: mix deps.get --only test
       - run: mix test
       - run: mix hex.build
+      - run: mix docs
       - run: mix format --check-formatted
