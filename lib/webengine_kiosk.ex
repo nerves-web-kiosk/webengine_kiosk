@@ -37,6 +37,7 @@ defmodule WebengineKiosk do
   * `fullscreen: boolean` - show fullscreen
   * `gid: gid` - run the browser with this group id
   * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
+  * `monitor: index` - select the monitor for the web browser (0, 1, etc.)
   * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend. This is only a hint.
   * `progress: boolean` - show a progress bar when loading pages
   * `sounds: boolean` - play sounds on clicks
@@ -44,7 +45,6 @@ defmodule WebengineKiosk do
 
   Untested:
 
-  * `monitor: index` - select the monitor for the web browser (0, 1, etc.)
   * `clear_cache: boolean`
   * `proxy_enable: boolean` - enable/disable proxy support
   * `proxy_system: ` -
