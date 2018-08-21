@@ -36,7 +36,7 @@ Doc all of the options here!
 
 ## Installation
 
-`WebengineKiosk` requires [Qt](http://qt.io/) versions 5.10 or later (it may
+`WebengineKiosk` requires [Qt](http://qt.io/) version 5.10 or later (it may
 work on earlier versions, but we haven't tested it). It is likely that your
 package manager already has a Qt package.
 
@@ -77,6 +77,9 @@ def deps do
 end
 ```
 
-Documentation can be found at
-[https://hexdocs.pm/webengine_kiosk](https://hexdocs.pm/webengine_kiosk).
+## Permissions
 
+`WebengineKiosk` will refuse to run as the root user. You may specify a name or
+number using the `:uid` and `:gid` parameters to `WebengineKiosk.start_link/2`.
+If unspecified and running as root, `WebengineKiosk` will try to drop to a
+`kiosk` user and `kiosk` group by default.

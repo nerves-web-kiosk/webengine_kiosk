@@ -68,15 +68,15 @@ int main(int argc, char *argv[])
     // Some settings need to be handled before Qt does anything.
     // Scan for them here. If there are issues, then KioskSettings
     // will report them.
-    gid_t gid = 0;
-    uid_t uid = 0;
+    gid_t desired_gid = 0;
+    uid_t desired_uid = 0;
 
     for (int i = 1; i < argc - 1; i++) {
         if (strcmp(argv[i], "--gid") == 0) {
-            gid = stringToGid(argv[i + 1]);
+            desired_gid = stringToGid(argv[i + 1]);
             i++;
         } else if (strcmp(argv[i], "--uid") == 0) {
-            uid = stringToUid(argv[i + 1]);
+            desired_uid = stringToUid(argv[i + 1]);
             i++;
         } else if (strcmp(argv[i], "--opengl") == 0) {
             setOpenGLMode(argv[i + 1]);
@@ -84,20 +84,39 @@ int main(int argc, char *argv[])
         }
     }
 
+    gid_t current_gid = getgid();
+    uid_t current_uid = getuid();
+    if (current_gid == 0 || current_uid == 0) {
+        // Running with elevated privileges. This isn't a good idea, so
+        // see if the user specified a gid and uid or try to specify
+        // one for them.
+        if (desired_gid == 0) {
+            warnx("Running a web browser with gid == 0 is not allowed. Looking for a kiosk group.");
+            desired_gid = stringToGid("kiosk");
+        }
+        if (desired_uid == 0) {
+            warnx("Running a web browser with uid == 0 is not allowed. Looking for a kiosk user.");
+            desired_uid = stringToUid("kiosk");
+        }
+
+        if (desired_gid == 0 || desired_uid == 0)
+            errx(EXIT_FAILURE, "Refusing to run with uid == %d and gid == %d", desired_uid, desired_gid);
+    }
+
     // Drop/change privilege if requested
     // See https://wiki.sei.cmu.edu/confluence/display/c/POS36-C.+Observe+correct+revocation+order+while+relinquishing+privileges
-    if (gid > 0 && setgid(gid) < 0)
-        err(EXIT_FAILURE, "setgid(%d)", gid);
+    if (desired_gid > 0 && setgid(desired_gid) < 0)
+        err(EXIT_FAILURE, "setgid(%d) failed", desired_gid);
 
-    if (uid > 0 && setuid(uid) < 0)
-        err(EXIT_FAILURE, "setuid(%d)", uid);
+    if (desired_uid > 0 && setuid(desired_uid) < 0)
+        err(EXIT_FAILURE, "setuid(%d) failed", desired_uid);
 
     QApplication app(argc, argv);
     KioskSettings settings(app);
 
     // Copy in the uid/gid settings for posterity.
-    settings.uid = uid;
-    settings.gid = gid;
+    settings.uid = desired_uid;
+    settings.gid = desired_gid;
 
     Kiosk kiosk(&settings);
     kiosk.init();

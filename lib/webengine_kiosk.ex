@@ -33,10 +33,12 @@ defmodule WebengineKiosk do
   * `background_color: color` - specify a background color as #RRGGBB or by name
   * `blank_image: path` - specify a path to an image for when the screen is blanked
   * `fullscreen: boolean` - show fullscreen
+  * `gid: gid` - run the browser with this group id
   * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
   * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend. This is only a hint.
   * `progress: boolean` - show a progress bar when loading pages
   * `sounds: boolean` - play sounds on clicks
+  * `uid: uid` - run the browser as this user
 
   Untested:
 
@@ -57,8 +59,6 @@ defmodule WebengineKiosk do
   * `debug_menu: boolean` - enable a menubar for debugging
   * `width: pixels` - when not fullscreen, the window is this width
   * `height: pixels` - when not fullscreen, the window is this height
-  * `uid: uid` - run the browser as this user
-  * `gid: gid` - run the browser with this group id
   """
   @spec start_link(Keyword.t(), GenServer.options()) :: {:ok, pid} | {:error, term}
   def start_link(args, genserver_opts \\ []) do
