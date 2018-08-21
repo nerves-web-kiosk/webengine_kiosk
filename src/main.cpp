@@ -83,6 +83,12 @@ int main(int argc, char *argv[])
         } else if (strcmp(argv[i], "--opengl") == 0) {
             setOpenGLMode(argv[i + 1]);
             i++;
+        } else if (strcmp(argv[i], "--data_dir") == 0) {
+            // Qt derives the data directories for QtWebEngine
+            // based on $HOME, so change it if the user specifies
+            // --data_dir
+            setenv("HOME", argv[i + 1], 1);
+            i++;
         }
     }
 

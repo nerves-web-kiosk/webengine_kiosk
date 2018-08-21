@@ -1,6 +1,7 @@
 defmodule WebengineKiosk.Options do
   @all_options [
     :clear_cache,
+    :data_dir,
     :homepage,
     :monitor,
     :opengl,

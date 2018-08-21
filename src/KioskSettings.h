@@ -11,6 +11,7 @@ struct KioskSettings
 {
     explicit KioskSettings(const QCoreApplication &app);
 
+    QString dataDir;
     bool clearCache;
     QUrl homepage;
     bool fullscreen;

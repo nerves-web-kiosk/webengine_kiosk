@@ -16,6 +16,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     parser.addVersionOption();
 
     QList<QCommandLineOption> options = QList<QCommandLineOption>({
+            {"data_dir", "Data directory (defaults to subdirectories of $HOME)", "path", ""},
             {"clear_cache", "Clear cached request data.", "bool", "true"},
             {"homepage", "Set starting url", "url", ""},
             {"monitor", "Display window on the <n>th monitor.", "n", "0"},
@@ -47,6 +48,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     parser.addOptions(options);
     parser.process(app);
 
+    dataDir = parser.value("data_dir");
     clearCache = toBool(parser.value("clear_cache"));
     QString homePageAsString = parser.value("homepage");
     if (!homePageAsString.isEmpty()) {

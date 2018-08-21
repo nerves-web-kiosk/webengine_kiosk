@@ -32,6 +32,7 @@ defmodule WebengineKiosk do
 
   * `background_color: color` - specify a background color as #RRGGBB or by name
   * `blank_image: path` - specify a path to an image for when the screen is blanked
+  * `data_dir: path` - specify a writable path for data files
   * `debug_keys: boolean` - enable key combinations useful for debugging
   * `fullscreen: boolean` - show fullscreen
   * `gid: gid` - run the browser with this group id
