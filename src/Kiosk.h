@@ -9,6 +9,7 @@ class KioskMessage;
 class KioskWindow;
 class KioskView;
 class KioskProgress;
+class KioskSounds;
 
 class Kiosk : public QObject
 {
@@ -21,6 +22,13 @@ public:
 public slots:
     void goToUrl(const QUrl &url);
     void runJavascript(const QString &program);
+    void reload();
+    void goBack();
+    void goForward();
+    void stopLoading();
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
 
 private slots:
     void handleRequest(const KioskMessage &message);
@@ -44,6 +52,8 @@ private:
 
     bool loadingPage_;
     bool showPageWhenDone_;
+
+    KioskSounds *player_;
 };
 
 #endif // KIOSK_H

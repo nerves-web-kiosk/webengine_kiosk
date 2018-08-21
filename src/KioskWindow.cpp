@@ -4,10 +4,9 @@
 #include "KioskView.h"
 #include "Blanking.h"
 
-#include <QMenu>
-#include <QMenuBar>
 #include <QInputDialog>
 #include <QApplication>
+#include <QAction>
 
 KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     QWidget(),
@@ -28,23 +27,43 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     progress_ = new KioskProgress(this);
     progress_->hide();
 
-    QAction* tempAction = new QAction(this);
-    tempAction->setShortcut(QKeySequence::Quit);
-    tempAction->setShortcutContext(Qt::ApplicationShortcut);
-    connect(tempAction, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
-    addAction(tempAction);
+    QAction* action = new QAction(this);
+    action->setShortcut(QKeySequence::Quit);
+    action->setShortcutContext(Qt::ApplicationShortcut);
+    connect(action, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+    addAction(action);
 
-#if 0
-    if (settings->debugMenuEnabled) {
-        QMenu *debugMenu = menuBar()->addMenu(tr("&Debug"));
-        QAction *action = new QAction(tr("Run &Javascript"), this);
-        connect(action, &QAction::triggered, this, &KioskWindow::doRunJavascriptDialog);
-        debugMenu->addAction(action);
-        action = new QAction(tr("Go to &URL"), this);
-        connect(action, &QAction::triggered, this, &KioskWindow::doGotoURLDialog);
-        debugMenu->addAction(action);
+    action = new QAction(this);
+    action->setShortcut(QKeySequence(Qt::Key_F5));
+    action->setShortcutContext(Qt::WindowShortcut);
+    connect(action, SIGNAL(triggered(bool)), kiosk, SLOT(reload()));
+    addAction(action);
+
+    action = new QAction(this);
+    action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_BracketLeft));
+    action->setShortcutContext(Qt::WindowShortcut);
+    connect(action, SIGNAL(triggered(bool)), kiosk, SLOT(goBack()));
+    addAction(action);
+
+    action = new QAction(this);
+    action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_BracketRight));
+    action->setShortcutContext(Qt::WindowShortcut);
+    connect(action, SIGNAL(triggered(bool)), kiosk, SLOT(goForward()));
+    addAction(action);
+
+    if (settings->debugKeysEnabled) {
+        action = new QAction(this);
+        action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_J));
+        action->setShortcutContext(Qt::WindowShortcut);
+        connect(action, SIGNAL(triggered(bool)), SLOT(doRunJavascriptDialog()));
+        addAction(action);
+
+        action = new QAction(this);
+        action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+        action->setShortcutContext(Qt::WindowShortcut);
+        connect(action, SIGNAL(triggered(bool)), SLOT(doGotoURLDialog()));
+        addAction(action);
     }
-#endif
 }
 
 KioskWindow::~KioskWindow()

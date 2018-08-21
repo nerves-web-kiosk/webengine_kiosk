@@ -3,7 +3,6 @@
 
 #include <QtWebEngineWidgets/QWebEnginePage>
 #include <QtWebEngineWidgets/QWebEngineView>
-#include "qplayer.h"
 
 struct KioskSettings;
 
@@ -16,17 +15,11 @@ public:
 
     QWebEngineView *createWindow(QWebEnginePage::WebWindowType type);
 
-    void playSound(const QUrl &sound);
-
-protected:
-    bool eventFilter(QObject *object, QEvent *event);
-
 private slots:
     void handleWindowCloseRequested();
 
 private:
     const KioskSettings *settings_;
-    QPlayer *player_;
     QWebEngineView *loader_;
 };
 

@@ -16,10 +16,10 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     parser.addVersionOption();
 
     QList<QCommandLineOption> options = QList<QCommandLineOption>({
-            {"clear_cache", "Clear cached request data."},
+            {"clear_cache", "Clear cached request data.", "bool", "true"},
             {"homepage", "Set starting url", "url", ""},
             {"monitor", "Display window on the <n>th monitor.", "n", "0"},
-            {"fullscreen", "Run kiosk fullscreen", "true"},
+            {"fullscreen", "Run kiosk fullscreen", "bool", "true"},
             {"width", "When not in fullscreen mode, this is the window width", "pixels", "1024"},
             {"height", "When not in fullscreen mode, this is the window height", "pixels", "768"},
             {"opengl", "Specify OpenGL preference.", "auto|software|gles|gl", "auto"},
@@ -37,9 +37,9 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"hide_cursor", "Specify the hide the mouse cursor.", "bool", "false"},
             {"javascript", "Enable Javascript.", "bool", "true"},
             {"javascript_can_open_windows", "Allow Javascript to open windows.", "bool", "false"},
-            {"debug_menu", "Enable a debug menu", "bool", "false"},
-            {"uid", "Drop priviledge and run as this uid.", "uid/user"},
-            {"gid", "Drop priviledge and run as this gid.", "gid/group"},
+            {"debug_keys", "Enable a debug key shortcuts", "bool", "false"},
+            {"uid", "Drop priviledge and run as this uid.", "uid/user", ""},
+            {"gid", "Drop priviledge and run as this gid.", "gid/group", ""},
             {"zoom_factor", "The zoom factor for the page (0.25 to 5.0).", "factor", "1.0"},
             {"blank_image", "An image to use when the screen should be blank", "path", ""},
             {"background_color", "The background color of the browser and blank screen (unless there's a blank_image)", "#RRGGBB or name", "white"}
@@ -77,7 +77,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     hideCursor = toBool(parser.value("hide_cursor"));
     javascriptEnabled = toBool(parser.value("javascript"));
     javascriptCanOpenWindows = toBool(parser.value("javascript_can_open_windows"));
-    debugMenuEnabled = toBool(parser.value("debug_menu"));
+    debugKeysEnabled = toBool(parser.value("debug_keys"));
     uid = 0; // Set in main.c
     gid = 0; // Set in main.c
     zoomFactor = parser.value("zoom_factor").toDouble();

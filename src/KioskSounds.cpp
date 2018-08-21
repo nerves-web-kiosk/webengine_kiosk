@@ -1,12 +1,12 @@
-#include "qplayer.h"
+#include "KioskSounds.h"
 
-QPlayer::QPlayer(QObject *parent) :
+KioskSounds::KioskSounds(QObject *parent) :
     QObject(parent),
     player(nullptr)
 {
 }
 
-void QPlayer::play(const QUrl &soundFile)
+void KioskSounds::play(const QUrl &soundFile)
 {
     if (player == nullptr) {
         player = new QMediaPlayer(this);
@@ -20,7 +20,7 @@ void QPlayer::play(const QUrl &soundFile)
     }
 }
 
-void QPlayer::player_error(QMediaPlayer::Error error)
+void KioskSounds::player_error(QMediaPlayer::Error error)
 {
     switch (error) {
     case QMediaPlayer::NoError:

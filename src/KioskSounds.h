@@ -4,12 +4,12 @@
 #include <QtCore>
 #include <QtMultimedia/QMediaPlayer>
 
-class QPlayer : public QObject
+class KioskSounds : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit QPlayer(QObject *parent = nullptr);
+    explicit KioskSounds(QObject *parent = nullptr);
 
     void play(const QUrl &soundFile);
 

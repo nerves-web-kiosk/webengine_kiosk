@@ -3,6 +3,7 @@
 #include "KioskView.h"
 #include "KioskProgress.h"
 #include "ElixirComs.h"
+#include "KioskSounds.h"
 
 #include <QNetworkProxy>
 #include <QWebEngineSettings>
@@ -23,6 +24,10 @@ Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
     connect(window_, SIGNAL(wakeup()), SLOT(handleWakeup()));
 
     window_->setGeometry(calculateWindowRect());
+
+    player_ = settings->soundsEnabled ? new KioskSounds(this) : nullptr;
+
+    qApp->installEventFilter(this);
 }
 
 void Kiosk::init()
@@ -78,6 +83,28 @@ void Kiosk::runJavascript(const QString &program)
     view_->page()->runJavaScript(program);
 }
 
+void Kiosk::reload()
+{
+    view_->reload();
+}
+
+void Kiosk::goBack()
+{
+    qDebug("back");
+    view_->back();
+}
+
+void Kiosk::goForward()
+{
+    qDebug("forward");
+    view_->forward();
+}
+
+void Kiosk::stopLoading()
+{
+    view_->stop();
+}
+
 void Kiosk::handleRequest(const KioskMessage &message)
 {
     switch (message.type()) {
@@ -93,9 +120,44 @@ void Kiosk::handleRequest(const KioskMessage &message)
         window_->setBrowserVisible(message.payload().at(0) == 0);
         break;
 
+    case KioskMessage::Reload:
+        reload();
+        break;
+
+    case KioskMessage::GoBack:
+        goBack();
+        break;
+
+    case KioskMessage::GoForward:
+        goForward();
+        break;
+
+    case KioskMessage::StopLoading:
+        stopLoading();
+        break;
+
     default:
         qFatal("Unknown message from Elixir: %d", message.type());
     }
+}
+
+bool Kiosk::eventFilter(QObject *object, QEvent *event)
+{
+    Q_UNUSED(object);
+
+    // See https://bugreports.qt.io/browse/QTBUG-43602 for mouse events
+    // seemingly not working with QWebEngineView.
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+        if (player_)
+            player_->play(settings_->windowClickedSound);
+        break;
+
+    default:
+        break;
+    }
+
+    return false;
 }
 
 void Kiosk::startLoading()
@@ -141,15 +203,15 @@ void Kiosk::finishLoading()
 void Kiosk::handleWakeup()
 {
     coms_->send(KioskMessage::wakeup());
-    view_->playSound(settings_->windowClickedSound);
 }
 
 void Kiosk::urlChanged(const QUrl &url)
 {
     coms_->send(KioskMessage::urlChanged(url));
 
-    // This is real link clicked
-    view_->playSound(settings_->linkClickedSound);
+    // This is the real link clicked
+    if (player_)
+        player_->play(settings_->linkClickedSound);
 }
 
 QRect Kiosk::calculateWindowRect() const

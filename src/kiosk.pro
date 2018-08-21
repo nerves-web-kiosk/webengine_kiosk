@@ -7,7 +7,6 @@ TARGET = kiosk
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    qplayer.cpp \
     KioskSettings.cpp \
     ElixirComs.cpp \
     KioskView.cpp \
@@ -15,10 +14,10 @@ SOURCES += main.cpp\
     Kiosk.cpp \
     KioskWindow.cpp \
     KioskProgress.cpp \
-    Blanking.cpp
+    Blanking.cpp \
+    KioskSounds.cpp
 
 HEADERS  += \
-    qplayer.h \
     KioskSettings.h \
     ElixirComs.h \
     KioskView.h \
@@ -26,7 +25,8 @@ HEADERS  += \
     Kiosk.h \
     KioskWindow.h \
     KioskProgress.h \
-    Blanking.h
+    Blanking.h \
+    KioskSounds.h
 
 target.path = ../priv
 

@@ -16,7 +16,11 @@ public:
         FinishedLoadingPage = 5,
         URLChanged = 6,
         Blank = 7,
-        Wakeup = 8
+        Wakeup = 8,
+        Reload = 9,
+        GoBack = 10,
+        GoForward = 11,
+        StopLoading = 12
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);

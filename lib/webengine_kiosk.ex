@@ -32,6 +32,7 @@ defmodule WebengineKiosk do
 
   * `background_color: color` - specify a background color as #RRGGBB or by name
   * `blank_image: path` - specify a path to an image for when the screen is blanked
+  * `debug_keys: boolean` - enable key combinations useful for debugging
   * `fullscreen: boolean` - show fullscreen
   * `gid: gid` - run the browser with this group id
   * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
@@ -56,7 +57,6 @@ defmodule WebengineKiosk do
   * `hide_cursor: boolean` - show or hide the mouse pointer
   * `javascript: boolean` - enable or disable Javascript support
   * `javascript_can_open_windows: boolean` - allow Javascript to open windows
-  * `debug_menu: boolean` - enable a menubar for debugging
   * `width: pixels` - when not fullscreen, the window is this width
   * `height: pixels` - when not fullscreen, the window is this height
   """
@@ -115,12 +115,32 @@ defmodule WebengineKiosk do
   end
 
   @doc """
-  Run arbitrary Javascript in the browser
+  Run Javascript in the browser.
   """
   @spec run_javascript(GenServer.server(), String.t()) :: :ok | {:error, term}
   def run_javascript(server, code) do
     GenServer.call(server, {:run_javascript, code})
   end
+
+  @doc """
+  Reload the current page.
+  """
+  def reload(server), do: GenServer.call(server, :reload)
+
+  @doc """
+  Go to the previously visited page.
+  """
+  def back(server), do: GenServer.call(server, :back)
+
+  @doc """
+  Go forward in history.
+  """
+  def forward(server), do: GenServer.call(server, :forward)
+
+  @doc """
+  Stop loading the current page.
+  """
+  def stop_loading(server), do: GenServer.call(server, :stop_loading)
 
   def init(args) do
     priv_dir = :code.priv_dir(:webengine_kiosk)
@@ -164,6 +184,26 @@ defmodule WebengineKiosk do
 
   def handle_call({:blank, yes}, _from, state) do
     send_port(state, Message.blank(yes))
+    {:reply, :ok, state}
+  end
+
+  def handle_call(:reload, _from, state) do
+    send_port(state, Message.reload())
+    {:reply, :ok, state}
+  end
+
+  def handle_call(:back, _from, state) do
+    send_port(state, Message.go_back())
+    {:reply, :ok, state}
+  end
+
+  def handle_call(:forward, _from, state) do
+    send_port(state, Message.go_forward())
+    {:reply, :ok, state}
+  end
+
+  def handle_call(:stop_loading, _from, state) do
+    send_port(state, Message.stop_loading())
     {:reply, :ok, state}
   end
 

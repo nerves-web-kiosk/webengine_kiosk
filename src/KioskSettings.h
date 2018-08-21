@@ -36,7 +36,7 @@ struct KioskSettings
     bool hideCursor;
     bool javascriptEnabled;
     bool javascriptCanOpenWindows;
-    bool debugMenuEnabled;
+    bool debugKeysEnabled;
 
     uid_t uid;
     gid_t gid;
