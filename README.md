@@ -83,13 +83,25 @@ end
 number using the `:uid` and `:gid` parameters to `WebengineKiosk.start_link/2`.
 If unspecified and running as root, `WebengineKiosk` will try to drop to a
 `kiosk` user and `kiosk` group by default. If dropping privileges, then you also
-need to ensure that `QtWebEngine` has a writable data directory. Use the `:data_dir`
-option do do this.
+need to ensure that `QtWebEngine` has a writable data directory. Use the
+`:data_dir` option do do this.
 
-The next set of permissions to check are platform-specific. Qt and Chromium directly
-access videos drivers and input devices. Usually the device files associated with
-those have group permissions and adding the user to the appropriate groups makes
-everything work. For example, on the Raspberry Pi, you'll need the kiosk user to be
-part of the `video` and `input` groups. You may also need to update the permissions
-and group ownership on `/dev/vchiq` if running on Nerves since it doesn't yet do
-that by default.
+The next set of permissions to check are platform-specific. Qt and Chromium
+directly access videos drivers and input devices. Usually the device files
+associated with those have group permissions and adding the user to the
+appropriate groups makes everything work. For example, on the Raspberry Pi,
+you'll need the kiosk user to be part of the `video` and `input` groups. You may
+also need to update the permissions and group ownership on `/dev/vchiq` if
+running on Nerves since it doesn't yet do that by default.
+
+## Debugging immediate exits
+
+If the `kiosk` binary exits immediately then something basic is wrong.
+Unfortunately, errors often get printed to the terminal and don't end up in
+Elixir logs. If this happens to you, try running the `kiosk` binary by itself:
+
+```elixir
+iex> path = Application.app_dir(:webengine_kiosk, "priv/kiosk")
+"/srv/erlang/lib/webengine_kiosk-0.1.0/priv/kiosk"
+iex> System.cmd(path, [])
+```
