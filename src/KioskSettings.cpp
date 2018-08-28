@@ -78,7 +78,6 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     linkClickedSound = QUrl(parser.value("link_clicked_sound"));
     hideCursor = toBool(parser.value("hide_cursor"));
     javascriptEnabled = toBool(parser.value("javascript"));
-    javascriptCanOpenWindows = toBool(parser.value("javascript_can_open_windows"));
     debugKeysEnabled = toBool(parser.value("debug_keys"));
     uid = 0; // Set in main.c
     gid = 0; // Set in main.c

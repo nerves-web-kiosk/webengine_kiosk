@@ -59,7 +59,7 @@ void Kiosk::init()
     // Start the browser up
     view_ = window_->view();
     view_->settings()->setAttribute(QWebEngineSettings::JavascriptEnabled, settings_->javascriptEnabled);
-    view_->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, settings_->javascriptCanOpenWindows);
+    view_->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, false);
 
     connect(view_, SIGNAL(loadStarted()), SLOT(startLoading()));
     connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
