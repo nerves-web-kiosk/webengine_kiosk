@@ -2,6 +2,7 @@
 #include "Kiosk.h"
 #include "KioskProgress.h"
 #include "KioskView.h"
+#include "KioskPage.h"
 #include "Blanking.h"
 
 #include <QInputDialog>
@@ -24,6 +25,7 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     connect(blank_, SIGNAL(mousePressed()), SIGNAL(wakeup()));
 
     view_ = new KioskView(settings_, this);
+    view_->setPage(new KioskPage(this));
     view_->hide();
 
     progress_ = new KioskProgress(this);
