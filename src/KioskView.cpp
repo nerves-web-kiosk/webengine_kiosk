@@ -8,8 +8,7 @@
 #include "KioskSettings.h"
 
 KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngineView(parent),
-    settings_(settings),
-    loader_(nullptr)
+    settings_(settings)
 {
     page()->setZoomFactor(settings_->zoomFactor);
     page()->setBackgroundColor(settings_->backgroundColor);
@@ -18,15 +17,9 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
     setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
-void KioskView::handleWindowCloseRequested()
+QWebEngineView *KioskView::createWindow(QWebEnginePage::WebWindowType type)
 {
-
-    qDebug("KioskView::handleWindowCloseRequested");
-}
-
-QWebEngineView *KioskView::createWindow(QWebEnginePage::WebWindowType /*type*/)
-{
-    qDebug("KioskView::createWindow");
+    qDebug("KioskView::createWindow %d", type);
 
     // Don't allow windows
     return nullptr;

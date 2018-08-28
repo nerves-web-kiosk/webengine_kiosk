@@ -15,12 +15,8 @@ public:
 
     QWebEngineView *createWindow(QWebEnginePage::WebWindowType type);
 
-private slots:
-    void handleWindowCloseRequested();
-
 private:
     const KioskSettings *settings_;
-    QWebEngineView *loader_;
 };
 
 #endif // KIOSK_VIEW_H
