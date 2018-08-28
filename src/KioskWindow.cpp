@@ -12,7 +12,6 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     QWidget(),
     kiosk_(kiosk),
     settings_(settings),
-    view_(nullptr),
     showingBrowser_(false)
 {
     setMinimumWidth(320);
@@ -23,6 +22,9 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     if (!settings->blankImage.isEmpty())
         blank_->setPixmap(settings->blankImage);
     connect(blank_, SIGNAL(mousePressed()), SIGNAL(wakeup()));
+
+    view_ = new KioskView(settings_, this);
+    view_->hide();
 
     progress_ = new KioskProgress(this);
     progress_->hide();
@@ -70,30 +72,19 @@ KioskWindow::~KioskWindow()
 {
 }
 
-void KioskWindow::setView(KioskView *view)
+KioskView *KioskWindow::view() const
 {
-    view_ = view;
-    view_->setVisible(showingBrowser_);
-    //view_->setParent(this);
-    view_->stackUnder(progress_);
-    QSize sz = size();
-    view_->setGeometry(0, 0, sz.width(), sz.height());
-    if (showingBrowser_) {
-        view_->setEnabled(true);
-        view_->setFocus();
-    }
+    return view_;
 }
 
 void KioskWindow::setBrowserVisible(bool enabled)
 {
     showingBrowser_ = enabled;
-    if (view_) {
-        view_->setVisible(enabled);
-        view_->setEnabled(enabled);
-        blank_->setEnabled(!enabled);
-        if (enabled) {
-            view_->setFocus();
-        }
+    view_->setVisible(enabled);
+    view_->setEnabled(enabled);
+    blank_->setEnabled(!enabled);
+    if (enabled) {
+        view_->setFocus();
     }
 }
 
@@ -122,8 +113,7 @@ void KioskWindow::resizeEvent(QResizeEvent *event)
 {
     QSize sz = event->size();
     blank_->setGeometry(0, 0, sz.width(), sz.height());
-    if (view_)
-        view_->setGeometry(0, 0, sz.width(), sz.height());
+    view_->setGeometry(0, 0, sz.width(), sz.height());
 
     int x = (sz.width() - progress_->width()) / 2;
     int y = (sz.height() - progress_->height()) / 2;

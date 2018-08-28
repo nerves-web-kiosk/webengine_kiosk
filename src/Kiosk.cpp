@@ -57,7 +57,7 @@ void Kiosk::init()
     connect(coms_, SIGNAL(messageReceived(KioskMessage)), SLOT(handleRequest(KioskMessage)));
 
     // Start the browser up
-    view_ = new KioskView(settings_, window_);
+    view_ = window_->view();
     view_->settings()->setAttribute(QWebEngineSettings::JavascriptEnabled, settings_->javascriptEnabled);
     view_->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, settings_->javascriptCanOpenWindows);
 
@@ -65,7 +65,6 @@ void Kiosk::init()
     connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
     connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
-    window_->setView(view_);
     view_->load(settings_->homepage);
 
     if (settings_->fullscreen)

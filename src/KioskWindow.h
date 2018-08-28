@@ -23,7 +23,8 @@ public:
     explicit KioskWindow(Kiosk *kiosk, const KioskSettings *settings);
     ~KioskWindow();
 
-    void setView(KioskView *view);
+    KioskView *view() const;
+
     void setBrowserVisible(bool enabled);
 
     void showProgress(int percent);
