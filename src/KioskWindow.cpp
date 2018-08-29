@@ -24,8 +24,15 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
         blank_->setPixmap(settings->blankImage);
     connect(blank_, SIGNAL(mousePressed()), SIGNAL(wakeup()));
 
-    view_ = new KioskView(settings_, this);
+    //view_ = new KioskView(settings_, this);
+    view_ = new QWebEngineView(this);
     view_->setPage(new KioskPage(this));
+    qDebug("Setting zoom factor to %f", settings_->zoomFactor);
+    view_->page()->setZoomFactor(settings_->zoomFactor);
+    view_->page()->setBackgroundColor(settings_->backgroundColor);
+    view_->setFocusPolicy(Qt::StrongFocus);
+    view_->setContextMenuPolicy(Qt::PreventContextMenu);
+
     view_->hide();
 
     progress_ = new KioskProgress(this);
@@ -74,7 +81,7 @@ KioskWindow::~KioskWindow()
 {
 }
 
-KioskView *KioskWindow::view() const
+QWebEngineView *KioskWindow::view() const
 {
     return view_;
 }

@@ -82,6 +82,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
     uid = 0; // Set in main.c
     gid = 0; // Set in main.c
     zoomFactor = parser.value("zoom_factor").toDouble();
+    qDebug("zoomFactor = %f", zoomFactor);
     if (zoomFactor < 0.25)
         zoomFactor = 0.25;
     else if (zoomFactor > 5.0)

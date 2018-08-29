@@ -10,11 +10,6 @@
 KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngineView(parent),
     settings_(settings)
 {
-    page()->setZoomFactor(settings_->zoomFactor);
-    page()->setBackgroundColor(settings_->backgroundColor);
-
-    setFocusPolicy(Qt::StrongFocus);
-    //setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
 QWebEngineView *KioskView::createWindow(QWebEnginePage::WebWindowType type)

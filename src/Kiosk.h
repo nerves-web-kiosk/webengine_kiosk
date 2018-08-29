@@ -7,7 +7,7 @@
 class ElixirComs;
 class KioskMessage;
 class KioskWindow;
-class KioskView;
+class QWebEngineView;
 class KioskProgress;
 class KioskSounds;
 class QWindow;
@@ -49,7 +49,7 @@ private:
     ElixirComs *coms_;
 
     KioskWindow *window_;
-    KioskView *view_;
+    QWebEngineView *view_;
 
     bool loadingPage_;
     bool showPageWhenDone_;

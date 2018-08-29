@@ -8,7 +8,7 @@
 
 class Kiosk;
 class KioskProgress;
-class KioskView;
+class QWebEngineView;
 class Blanking;
 
 // NOTE: This is not a QMainWindow even though that would make a lot of sense.
@@ -23,7 +23,7 @@ public:
     explicit KioskWindow(Kiosk *kiosk, const KioskSettings *settings);
     ~KioskWindow();
 
-    KioskView *view() const;
+    QWebEngineView *view() const;
 
     void setBrowserVisible(bool enabled);
 
@@ -50,7 +50,7 @@ private:
 
     KioskProgress *progress_;
     Blanking *blank_;
-    KioskView *view_;
+    QWebEngineView *view_;
 
     bool showingBrowser_;
 };
