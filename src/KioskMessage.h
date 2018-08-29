@@ -20,7 +20,8 @@ public:
         Reload = 9,
         GoBack = 10,
         GoForward = 11,
-        StopLoading = 12
+        StopLoading = 12,
+        SetZoom = 13
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);

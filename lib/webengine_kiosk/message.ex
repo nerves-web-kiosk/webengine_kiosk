@@ -12,6 +12,7 @@ defmodule WebengineKiosk.Message do
   @msg_go_back 10
   @msg_go_forward 11
   @msg_stop_loading 12
+  @msg_set_zoom 13
 
   @moduledoc false
 
@@ -37,6 +38,19 @@ defmodule WebengineKiosk.Message do
   @spec stop_loading() :: binary()
   def stop_loading(), do: <<@msg_stop_loading>>
 
+  @spec set_zoom(number()) :: binary()
+  def set_zoom(factor) when is_number(factor) do
+    str = to_string(factor)
+    <<@msg_set_zoom, str::binary>>
+  end
+
+  @spec decode(binary()) ::
+          :finished_loading_page
+          | :started_loading_page
+          | :wakeup
+          | {:progress, byte()}
+          | {:unknown, byte()}
+          | {:url_changed, String.t()}
   def decode(<<@msg_progress, value>>), do: {:progress, value}
   def decode(<<@msg_url_changed, url::binary>>), do: {:url_changed, url}
   def decode(<<@msg_loading_page>>), do: :started_loading_page

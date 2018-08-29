@@ -147,6 +147,14 @@ defmodule WebengineKiosk do
   @spec stop_loading(GenServer.server()) :: :ok | {:error, term()}
   def stop_loading(server), do: GenServer.call(server, :stop_loading)
 
+  @doc """
+  Set the zoom factor for displaying the page.
+  """
+  @spec set_zoom(GenServer.server(), number()) :: :ok | {:error, term()}
+  def set_zoom(server, factor) when is_number(factor) and factor > 0 do
+    GenServer.call(server, {:set_zoom, factor})
+  end
+
   def init(args) do
     priv_dir = :code.priv_dir(:webengine_kiosk)
     cmd = Path.join(priv_dir, "kiosk")
@@ -210,6 +218,11 @@ defmodule WebengineKiosk do
 
   def handle_call(:stop_loading, _from, state) do
     send_port(state, Message.stop_loading())
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:set_zoom, factor}, _from, state) do
+    send_port(state, Message.set_zoom(factor))
     {:reply, :ok, state}
   end
 

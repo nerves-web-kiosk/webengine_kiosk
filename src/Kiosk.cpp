@@ -135,6 +135,18 @@ void Kiosk::handleRequest(const KioskMessage &message)
         stopLoading();
         break;
 
+    case KioskMessage::SetZoom:
+    {
+        qreal zoom = message.payload().toDouble();
+        if (zoom <= 0.01)
+            zoom = 0.01;
+        else if (zoom > 10.0)
+            zoom = 10.0;
+
+        view_->page()->setZoomFactor(zoom);
+        break;
+    }
+
     default:
         qFatal("Unknown message from Elixir: %d", message.type());
     }
