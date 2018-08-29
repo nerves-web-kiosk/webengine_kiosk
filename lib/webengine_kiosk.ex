@@ -153,6 +153,7 @@ defmodule WebengineKiosk do
       all_options
       |> Enum.flat_map(fn {key, value} -> ["--#{key}", to_string(value)] end)
 
+    set_permissions(all_options)
     homepage = Keyword.get(all_options, :homepage)
 
     port =
@@ -226,5 +227,39 @@ defmodule WebengineKiosk do
 
   defp send_port(state, message) do
     send(state.port, {self(), {:command, message}})
+  end
+
+  defp set_permissions(opts) do
+    # Check if we are on a raspberry pi
+    if File.exists?("/dev/vchiq") do
+      File.chgrp("/dev/vchiq", 28)
+      File.chmod("/dev/vchiq", 0o660)
+    end
+
+    if data_dir = Keyword.get(opts, :data_dir) do
+      File.mkdir_p(data_dir)
+
+      if uid = Keyword.get(opts, :uid) do
+        chown(data_dir, uid)
+      end
+    end
+  end
+
+  defp chown(file, uid) when is_binary(uid) do
+    case System.cmd("id", ["-u", uid]) do
+      {uid, 0} ->
+        uid =
+          String.trim(uid)
+          |> String.to_integer()
+
+        chown(file, uid)
+
+      _ ->
+        :error
+    end
+  end
+
+  defp chown(file, uid) when is_integer(uid) do
+    File.chown(file, uid)
   end
 end
