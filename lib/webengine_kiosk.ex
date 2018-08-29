@@ -126,21 +126,25 @@ defmodule WebengineKiosk do
   @doc """
   Reload the current page.
   """
+  @spec reload(GenServer.server()) :: :ok | {:error, term()}
   def reload(server), do: GenServer.call(server, :reload)
 
   @doc """
   Go to the previously visited page.
   """
+  @spec back(GenServer.server()) :: :ok | {:error, term()}
   def back(server), do: GenServer.call(server, :back)
 
   @doc """
   Go forward in history.
   """
+  @spec forward(GenServer.server()) :: :ok | {:error, term()}
   def forward(server), do: GenServer.call(server, :forward)
 
   @doc """
   Stop loading the current page.
   """
+  @spec stop_loading(GenServer.server()) :: :ok | {:error, term()}
   def stop_loading(server), do: GenServer.call(server, :stop_loading)
 
   def init(args) do
