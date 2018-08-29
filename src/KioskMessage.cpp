@@ -7,7 +7,7 @@ KioskMessage::KioskMessage(const QByteArray &rawMessage) :
 }
 
 KioskMessage::KioskMessage(KioskMessage::Type type, QByteArray payload) :
-    rawMessage_(payload.prepend((char) type))
+    rawMessage_(payload.prepend(static_cast<char>(type)))
 {
 }
 
@@ -18,7 +18,7 @@ KioskMessage::KioskMessage(const char *buffer, int length) :
 
 KioskMessage::Type KioskMessage::type() const
 {
-    return (KioskMessage::Type) rawMessage_.at(0);
+    return static_cast<KioskMessage::Type>(rawMessage_.at(0));
 }
 
 QByteArray KioskMessage::payload() const
@@ -28,7 +28,7 @@ QByteArray KioskMessage::payload() const
 
 KioskMessage KioskMessage::progressMessage(int progress)
 {
-    char message[2] = {KioskMessage::Progress, (char) progress};
+    char message[2] = {KioskMessage::Progress, static_cast<char>(progress)};
     return KioskMessage(message, sizeof(message));
 }
 
