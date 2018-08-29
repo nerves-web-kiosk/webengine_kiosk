@@ -117,6 +117,9 @@ void KioskWindow::resizeEvent(QResizeEvent *event)
     blank_->setGeometry(0, 0, sz.width(), sz.height());
     view_->setGeometry(0, 0, sz.width(), sz.height());
 
+    // HACK??
+    view_->setZoomFactor(view_->zoomFactor());
+
     int x = (sz.width() - progress_->width()) / 2;
     int y = (sz.height() - progress_->height()) / 2;
     progress_->setGeometry(x, y, progress_->width(), progress_->height());
