@@ -32,7 +32,7 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"proxy_password", "The password for the proxy.", "password"},
             {"stay_on_top", "Use to make the window stay on top", "bool", "true"},
             {"progress", "Show the load progress.", "bool", "true"},
-            {"sounds", "Use to enable UI sounds.", "bool", "true"},
+            {"sounds", "Use to enable UI sounds.", "bool", "false"},
             {"window_clicked_sound", "Path to a sound to play when then window is clicked.", "url", "qrc:///ui/window-clicked.wav"},
             {"link_clicked_sound", "Path to a sound to play when then window is clicked.", "url", "qrc:///ui/link-clicked.wav"},
             {"hide_cursor", "Specify the hide the mouse cursor.", "bool", "false"},
