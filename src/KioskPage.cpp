@@ -49,6 +49,13 @@ bool KioskPage::certificateError(const QWebEngineCertificateError &certificateEr
 
 bool KioskPage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
 {
-    qDebug("KioskPage::acceptNavigationRequest");
-    return QWebEnginePage::acceptNavigationRequest(url, type, isMainFrame);
+    qDebug("KioskPage::acceptNavigationRequest %s, %d, %d", qPrintable(url.toString()), type, isMainFrame);
+    bool rc;
+    if (!isMainFrame)
+        rc = false;
+    else
+        rc = QWebEnginePage::acceptNavigationRequest(url, type, isMainFrame);
+
+    qDebug("    rc = %d", rc);
+    return rc;
 }
