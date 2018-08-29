@@ -14,7 +14,7 @@ KioskView::KioskView(const KioskSettings *settings, QWidget* parent): QWebEngine
     page()->setBackgroundColor(settings_->backgroundColor);
 
     setFocusPolicy(Qt::StrongFocus);
-    setContextMenuPolicy(Qt::PreventContextMenu);
+    //setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
 QWebEngineView *KioskView::createWindow(QWebEnginePage::WebWindowType type)

@@ -197,8 +197,10 @@ bool Kiosk::eventFilter(QObject *object, QEvent *event)
 
     // See https://bugreports.qt.io/browse/QTBUG-43602 for mouse events
     // seemingly not working with QWebEngineView.
+    QMouseEvent *me = (QMouseEvent *) event;
     switch (event->type()) {
     case QEvent::MouseButtonPress:
+        qDebug("Mousepress: %x %x %d (%d, %d)", me->button(), me->buttons(), me->modifiers(), me->x(), me->y());
         if (player_)
             player_->play(settings_->windowClickedSound);
         break;
