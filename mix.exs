@@ -19,7 +19,8 @@ defmodule WebengineKiosk.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {WebengineKiosk.Application, []}
     ]
   end
 
@@ -56,6 +57,7 @@ defmodule WebengineKiosk.MixProject do
 
   defp deps do
     [
+      {:system_registry, "~> 0.8", optional: true},
       {:elixir_make, "~> 0.4", runtime: false},
       {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
     ]
