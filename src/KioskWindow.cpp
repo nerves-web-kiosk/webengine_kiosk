@@ -1,13 +1,13 @@
 #include "KioskWindow.h"
 #include "Kiosk.h"
 #include "KioskProgress.h"
-#include "KioskView.h"
 #include "KioskPage.h"
 #include "Blanking.h"
 
 #include <QInputDialog>
 #include <QApplication>
 #include <QAction>
+#include <QWebEngineView>
 
 KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
     QWidget(),
@@ -24,8 +24,12 @@ KioskWindow::KioskWindow(Kiosk *kiosk, const KioskSettings *settings) :
         blank_->setPixmap(settings->blankImage);
     connect(blank_, SIGNAL(mousePressed()), SIGNAL(wakeup()));
 
-    view_ = new KioskView(settings_, this);
+    view_ = new QWebEngineView(this);
     view_->setPage(new KioskPage(this));
+    view_->page()->setBackgroundColor(settings_->backgroundColor);
+    view_->setFocusPolicy(Qt::StrongFocus);
+    view_->setContextMenuPolicy(Qt::PreventContextMenu);
+
     view_->hide();
 
     progress_ = new KioskProgress(this);
@@ -74,19 +78,22 @@ KioskWindow::~KioskWindow()
 {
 }
 
-KioskView *KioskWindow::view() const
+QWebEngineView *KioskWindow::view() const
 {
     return view_;
 }
 
 void KioskWindow::setBrowserVisible(bool enabled)
 {
-    showingBrowser_ = enabled;
-    view_->setVisible(enabled);
-    view_->setEnabled(enabled);
-    blank_->setEnabled(!enabled);
-    if (enabled) {
-        view_->setFocus();
+    if (enabled != showingBrowser_) {
+        showingBrowser_ = enabled;
+        view_->setVisible(enabled);
+        view_->setEnabled(enabled);
+        blank_->setEnabled(!enabled);
+        if (enabled) {
+            view_->page()->setZoomFactor(settings_->zoomFactor);
+            view_->setFocus();
+        }
     }
 }
 

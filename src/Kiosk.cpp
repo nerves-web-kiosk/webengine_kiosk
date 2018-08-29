@@ -1,6 +1,5 @@
 #include "Kiosk.h"
 #include "KioskWindow.h"
-#include "KioskView.h"
 #include "KioskProgress.h"
 #include "ElixirComs.h"
 #include "KioskSounds.h"
@@ -10,6 +9,7 @@
 #include <QApplication>
 #include <QLabel>
 #include <QMetaObject>
+#include <QWebEngineView>
 
 Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
     QObject(parent),

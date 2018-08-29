@@ -9,7 +9,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
     KioskSettings.cpp \
     ElixirComs.cpp \
-    KioskView.cpp \
     KioskMessage.cpp \
     Kiosk.cpp \
     KioskWindow.cpp \
@@ -21,7 +20,6 @@ SOURCES += main.cpp\
 HEADERS  += \
     KioskSettings.h \
     ElixirComs.h \
-    KioskView.h \
     KioskMessage.h \
     Kiosk.h \
     KioskWindow.h \
