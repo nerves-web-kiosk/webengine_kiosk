@@ -32,6 +32,7 @@ defmodule WebengineKiosk.MixProject do
     [
       files: [
         "lib",
+        "priv/www",
         "src/main.cpp",
         "src/Blanking.cpp",
         "src/Blanking.h",
