@@ -10,6 +10,7 @@ class KioskWindow;
 class KioskView;
 class KioskProgress;
 class KioskSounds;
+class QWindow;
 
 class Kiosk : public QObject
 {
@@ -54,6 +55,7 @@ private:
     bool showPageWhenDone_;
 
     KioskSounds *player_;
+    QWindow *theGoodWindow_;
 };
 
 #endif // KIOSK_H

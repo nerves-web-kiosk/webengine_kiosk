@@ -17,7 +17,8 @@ Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
     coms_(nullptr),
     view_(nullptr),
     loadingPage_(false),
-    showPageWhenDone_(true)
+    showPageWhenDone_(true),
+    theGoodWindow_(nullptr)
 {
     // Set up the UI
     window_ = new KioskWindow(this, settings);
@@ -139,9 +140,49 @@ void Kiosk::handleRequest(const KioskMessage &message)
     }
 }
 
+static bool isInputEvent(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::TabletPress:
+    case QEvent::TabletRelease:
+    case QEvent::TabletMove:
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseButtonDblClick:
+    case QEvent::MouseMove:
+    case QEvent::TouchBegin:
+    case QEvent::TouchUpdate:
+    case QEvent::TouchEnd:
+    case QEvent::TouchCancel:
+    case QEvent::ContextMenu:
+    case QEvent::KeyPress:
+    case QEvent::KeyRelease:
+    case QEvent::Wheel:
+        return true;
+    default:
+        return false;
+    }
+}
+
 bool Kiosk::eventFilter(QObject *object, QEvent *event)
 {
     Q_UNUSED(object);
+
+    if (object->isWindowType() && isInputEvent(event)) {
+        QQuickWindow *qwin = dynamic_cast<QQuickWindow *>(object);
+        if (qwin) {
+            // All events are supposed to go to the QWidgetWindow.
+            // However, on the Raspberry Pi, the order of the
+            // QWidgetWindow and QQuickWindow gets swapped. Oddly
+            // enough, this can be reliably reproduced when loading
+            // pages with networking, but no Internet. Raising
+            // the QWidgetWindow doesn't change which one gets
+            // events. Therefore, if the QQuickWindow does get
+            // an event, forward it over to the QWidgetWindow.
+            if (theGoodWindow_)
+                qApp->sendEvent(theGoodWindow_, event);
+        }
+    }
 
     // See https://bugreports.qt.io/browse/QTBUG-43602 for mouse events
     // seemingly not working with QWebEngineView.
@@ -193,9 +234,19 @@ void Kiosk::finishLoading()
         }
     }
 
-    // 3. Focus window and click into it to stimulate event loop after signal handling
+    // Force focus just in case it was lost somehow.
     QApplication::setActiveWindow(window_);
     window_->focusWidget();
+
+    // Capture the QWidgetWindow reference for the Raspberry Pi
+    // input event workaround. See event() function for details.
+    if (!theGoodWindow_) {
+        // QWidgetWindow is private so verify that it's not a QQuickWindow which
+        // isn't private and is the only alternative (to my knowledge).
+        QWindow *win = qApp->focusWindow();
+        if (dynamic_cast<QQuickWindow *>(win) == nullptr)
+            theGoodWindow_ = win;
+    }
 }
 
 void Kiosk::handleWakeup()
