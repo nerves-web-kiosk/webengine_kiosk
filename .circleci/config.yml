@@ -1,17 +1,16 @@
-# Elixir CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-elixir/ for more details
 version: 2
 jobs:
   build:
     docker:
-      - image: circleci/elixir:1.7
+      - image: circleci/elixir:1.7.3
     working_directory: ~/repo
+    environment:
+      - MIX_ENV: test
     steps:
       - checkout
       - run: sudo apt install qtwebengine5-dev qtmultimedia5-dev qt5-default -q
       - run: mix local.hex --force
-      - run: mix deps.get --only test
+      - run: mix deps.get
       - run: mix test
       - run: mix hex.build
       - run: mix docs
