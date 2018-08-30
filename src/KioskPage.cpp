@@ -2,7 +2,7 @@
 
 KioskPage::KioskPage(QObject *parent) : QWebEnginePage(parent)
 {
-
+    qDebug("Create KioskPage!!!!\r");
 }
 
 QWebEnginePage *KioskPage::createWindow(QWebEnginePage::WebWindowType type)

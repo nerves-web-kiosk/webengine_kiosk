@@ -200,16 +200,14 @@ bool Kiosk::eventFilter(QObject *object, QEvent *event)
     switch (event->type()) {
     case QEvent::MouseButtonPress:
     {
-        QMouseEvent *me = (QMouseEvent *) event;
-        qDebug("Mousepress: %x %x %d (%d, %d)", me->button(), me->buttons(), me->modifiers(), me->x(), me->y());
+        qDebug() << "Kiosk::eventFilter " << object << "->" << event << "\r";
         if (player_)
              player_->play(settings_->windowClickedSound);
         break;
     }
     case QEvent::TouchBegin:
     {
-        QTouchEvent *te = (QTouchEvent *) event;
-        qDebug("TouchBegin: %f, %f", te->touchPoints().at(0).pos().x(), te->touchPoints().at(0).pos().y());
+        qDebug() << "Kiosk::eventFilter " << object << "->" << event << "\r";
         break;
     }
     default:

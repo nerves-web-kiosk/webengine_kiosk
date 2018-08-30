@@ -39,6 +39,7 @@ public slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    bool event(QEvent *event);
 
 private slots:
     void doRunJavascriptDialog();
@@ -48,8 +49,8 @@ private:
     Kiosk *kiosk_;
     const KioskSettings *settings_;
 
-    KioskProgress *progress_;
-    Blanking *blank_;
+    //KioskProgress *progress_;
+    //Blanking *blank_;
     QWebEngineView *view_;
 
     bool showingBrowser_;
