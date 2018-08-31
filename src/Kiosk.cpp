@@ -65,6 +65,7 @@ void Kiosk::init()
     connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
     connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
     connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
+    connect(view_, SIGNAL(renderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus,int)), SLOT(handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus,int)));
     window_->setView(view_);
     view_->load(settings_->homepage);
 
@@ -264,6 +265,11 @@ void Kiosk::finishLoading()
 void Kiosk::handleWakeup()
 {
     coms_->send(KioskMessage::wakeup());
+}
+
+void Kiosk::handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus status, int exitCode)
+{
+    coms_->send(KioskMessage::browserCrashed(status, exitCode));
 }
 
 void Kiosk::urlChanged(const QUrl &url)

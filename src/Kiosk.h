@@ -1,8 +1,8 @@
 #ifndef KIOSK_H
 #define KIOSK_H
 
-#include <QObject>
 #include "KioskSettings.h"
+#include <QWebEnginePage>
 
 class ElixirComs;
 class KioskMessage;
@@ -40,6 +40,7 @@ private slots:
     void finishLoading();
 
     void handleWakeup();
+    void handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus status, int exitCode);
 
 private:
     QRect calculateWindowRect() const;

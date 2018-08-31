@@ -55,3 +55,9 @@ KioskMessage KioskMessage::wakeup()
     char message[1] = {KioskMessage::Wakeup};
     return KioskMessage(message, sizeof(message));
 }
+
+KioskMessage KioskMessage::browserCrashed(int terminationStatus, int exitCode)
+{
+    char message[3] = {KioskMessage::BrowserCrashed, static_cast<char>(terminationStatus), static_cast<char>(exitCode)};
+    return KioskMessage(message, sizeof(message));
+}

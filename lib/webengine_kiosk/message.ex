@@ -13,6 +13,7 @@ defmodule WebengineKiosk.Message do
   @msg_go_forward 11
   @msg_stop_loading 12
   @msg_set_zoom 13
+  @msg_browser_crashed 14
 
   @moduledoc false
 
@@ -51,10 +52,22 @@ defmodule WebengineKiosk.Message do
           | {:progress, byte()}
           | {:unknown, byte()}
           | {:url_changed, String.t()}
+          | {:browser_crashed, atom(), byte()}
   def decode(<<@msg_progress, value>>), do: {:progress, value}
   def decode(<<@msg_url_changed, url::binary>>), do: {:url_changed, url}
   def decode(<<@msg_loading_page>>), do: :started_loading_page
   def decode(<<@msg_finished_loading_page>>), do: :finished_loading_page
   def decode(<<@msg_wakeup>>), do: :wakeup
+
+  def decode(<<@msg_browser_crashed, status, exit_code>>) do
+    {:browser_crashed, termination_status(status), exit_code}
+  end
+
   def decode(<<msg_type, _payload::binary>>), do: {:unknown, msg_type}
+
+  defp termination_status(0), do: :normal
+  defp termination_status(1), do: :abnormal
+  defp termination_status(2), do: :crashed
+  defp termination_status(3), do: :killed
+  defp termination_status(n), do: {:unknown, n}
 end
