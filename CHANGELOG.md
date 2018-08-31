@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.1
+
+* Bug fixes
+  * Report web page crashes. When pages crash, Chromium handles them by printing
+    to the console and doing nothing. Now there's a message that gets propogated
+    up to Elixir and logged. The browser returns home.
+
 ## v0.2.0
 
 * Bug fixes
