@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     KioskWindow.cpp \
     KioskProgress.cpp \
     Blanking.cpp \
-    KioskSounds.cpp
+    KioskSounds.cpp \
+    StderrPipe.cpp
 
 HEADERS  += \
     KioskSettings.h \
@@ -26,7 +27,8 @@ HEADERS  += \
     KioskWindow.h \
     KioskProgress.h \
     Blanking.h \
-    KioskSounds.h
+    KioskSounds.h \
+    StderrPipe.h
 
 target.path = ../priv
 

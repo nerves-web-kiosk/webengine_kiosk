@@ -61,3 +61,10 @@ KioskMessage KioskMessage::browserCrashed(int terminationStatus, int exitCode)
     char message[3] = {KioskMessage::BrowserCrashed, static_cast<char>(terminationStatus), static_cast<char>(exitCode)};
     return KioskMessage(message, sizeof(message));
 }
+
+KioskMessage KioskMessage::consoleLog(const QByteArray &line)
+{
+    QByteArray message = line;
+    message.prepend(KioskMessage::ConsoleLog);
+    return KioskMessage(message, message.length());
+}

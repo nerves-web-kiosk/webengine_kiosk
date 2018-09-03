@@ -11,6 +11,7 @@ class KioskView;
 class KioskProgress;
 class KioskSounds;
 class QWindow;
+class StderrPipe;
 
 class Kiosk : public QObject
 {
@@ -41,6 +42,7 @@ private slots:
 
     void handleWakeup();
     void handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus status, int exitCode);
+    void handleStderr(const QByteArray &line);
 
 private:
     QRect calculateWindowRect() const;
@@ -48,6 +50,7 @@ private:
 private:
     const KioskSettings *settings_;
     ElixirComs *coms_;
+    StderrPipe *stderrPipe_;
 
     KioskWindow *window_;
     KioskView *view_;

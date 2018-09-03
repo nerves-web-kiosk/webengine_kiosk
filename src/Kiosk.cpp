@@ -4,6 +4,7 @@
 #include "KioskProgress.h"
 #include "ElixirComs.h"
 #include "KioskSounds.h"
+#include "StderrPipe.h"
 
 #include <QNetworkProxy>
 #include <QWebEngineSettings>
@@ -55,6 +56,10 @@ void Kiosk::init()
     // Set up communication with Elixir
     coms_ = new ElixirComs(this);
     connect(coms_, SIGNAL(messageReceived(KioskMessage)), SLOT(handleRequest(KioskMessage)));
+
+    // Take over stderr
+    stderrPipe_ = new StderrPipe(this);
+    connect(stderrPipe_, SIGNAL(inputReceived(QByteArray)), SLOT(handleStderr(QByteArray)));
 
     // Start the browser up
     view_ = new KioskView(settings_, window_);
@@ -270,6 +275,11 @@ void Kiosk::handleWakeup()
 void Kiosk::handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus status, int exitCode)
 {
     coms_->send(KioskMessage::browserCrashed(status, exitCode));
+}
+
+void Kiosk::handleStderr(const QByteArray &line)
+{
+    coms_->send(KioskMessage::consoleLog(line));
 }
 
 void Kiosk::urlChanged(const QUrl &url)

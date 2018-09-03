@@ -41,6 +41,8 @@ defmodule WebengineKiosk.MixProject do
         "src/Kiosk*.cpp",
         "src/Kiosk*.h",
         "src/kiosk.pro",
+        "src/StderrPipe.cpp",
+        "src/StderrPipe.h",
         "src/ui.qrc",
         "src/ui",
         "test",

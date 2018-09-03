@@ -14,6 +14,7 @@ defmodule WebengineKiosk.Message do
   @msg_stop_loading 12
   @msg_set_zoom 13
   @msg_browser_crashed 14
+  @msg_console_log 15
 
   @moduledoc false
 
@@ -61,6 +62,10 @@ defmodule WebengineKiosk.Message do
 
   def decode(<<@msg_browser_crashed, status, exit_code>>) do
     {:browser_crashed, termination_status(status), exit_code}
+  end
+
+  def decode(<<@msg_console_log, message::binary>>) do
+    {:console_log, message}
   end
 
   def decode(<<msg_type, _payload::binary>>), do: {:unknown, msg_type}

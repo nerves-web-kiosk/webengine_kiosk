@@ -12,13 +12,15 @@ class ElixirComs : public QObject
 public:
     explicit ElixirComs(QObject *parent = nullptr);
 
-    void send(const KioskMessage &message);
+    static void send(const KioskMessage &message);
 
 signals:
     void messageReceived(KioskMessage message);
 
 private slots:
     void process();
+
+private:
     ssize_t tryDispatch();
 
 private:

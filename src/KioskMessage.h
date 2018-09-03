@@ -22,7 +22,8 @@ public:
         GoForward = 11,
         StopLoading = 12,
         SetZoom = 13,
-        BrowserCrashed = 14
+        BrowserCrashed = 14,
+        ConsoleLog = 15
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);
@@ -41,6 +42,7 @@ public:
     static KioskMessage urlChanged(const QUrl &url);
     static KioskMessage wakeup();
     static KioskMessage browserCrashed(int terminationStatus, int exitCode);
+    static KioskMessage consoleLog(const QByteArray &line);
 
 private:
     const QByteArray rawMessage_;

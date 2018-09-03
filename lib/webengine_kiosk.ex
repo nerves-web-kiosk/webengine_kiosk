@@ -251,6 +251,11 @@ defmodule WebengineKiosk do
     {:noreply, state}
   end
 
+  defp handle_browser_message({:console_log, log}, state) do
+    Logger.warn("webengine_kiosk(stderr): #{log}")
+    {:noreply, state}
+  end
+
   defp handle_browser_message(message, state) do
     Logger.debug("webengine_kiosk: received #{inspect(message)}")
     {:noreply, state}
