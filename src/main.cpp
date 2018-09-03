@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
     gid_t desired_gid = 0;
     uid_t desired_uid = 0;
     const char *desired_user = nullptr;
+    bool run_as_root = false;
 
     for (int i = 1; i < argc - 1; i++) {
         if (strcmp(argv[i], "--gid") == 0) {
@@ -105,12 +106,22 @@ int main(int argc, char *argv[])
             // --data_dir
             setenv("HOME", argv[i + 1], 1);
             i++;
+        } else if(strcmp(argv[i], "--run_as_root") == 0) {
+            run_as_root = (strcmp(argv[i + 1], "true") == 0);
+            i++;
         }
     }
 
     gid_t current_gid = getgid();
     uid_t current_uid = getuid();
-    if (current_gid == 0 || current_uid == 0) {
+
+    if (run_as_root) {
+        if (current_gid != 0 || current_uid != 0)
+            errx(EXIT_FAILURE, "Change to the root user if you specify --run_as_root");
+
+        // If the user isn't setting the CHROMIUM_FLAGS, then add --no-sandbox for them.
+        setenv("QTWEBENGINE_CHROMIUM_FLAGS", "--no-sandbox", 0);
+    } else if (current_gid == 0 || current_uid == 0) {
         // Running with elevated privileges. This isn't a good idea, so
         // see if the user specified a gid and uid or try to specify
         // one for them.

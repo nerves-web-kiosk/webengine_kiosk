@@ -43,7 +43,8 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"gid", "Drop priviledge and run as this gid.", "gid/group", ""},
             {"zoom_factor", "The zoom factor for the page (0.25 to 5.0).", "factor", "1.0"},
             {"blank_image", "An image to use when the screen should be blank", "path", ""},
-            {"background_color", "The background color of the browser and blank screen (unless there's a blank_image)", "#RRGGBB or name", "white"}
+            {"background_color", "The background color of the browser and blank screen (unless there's a blank_image)", "#RRGGBB or name", "white"},
+            {"run_as_root", "Explicitly allow the kiosk to run as the root user", "bool", "false"}
         });
     parser.addOptions(options);
     parser.process(app);

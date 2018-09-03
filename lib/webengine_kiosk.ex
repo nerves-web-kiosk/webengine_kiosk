@@ -40,6 +40,7 @@ defmodule WebengineKiosk do
   * `monitor: index` - select the monitor for the web browser (0, 1, etc.)
   * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend. This is only a hint.
   * `progress: boolean` - show a progress bar when loading pages
+  * `run_as_root: boolean` - set to true if you really want to run Chromium as root
   * `sounds: boolean` - play sounds on clicks
   * `uid: uid` - run the browser as this user
 
