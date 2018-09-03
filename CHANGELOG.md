@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.2
+
+* Bug fixes
+  * Capture output to stderr from Chromium and the kiosk port app and send it to
+    the logger. Previously that output would get lost if you didn't have a
+    serial console cable attached making it difficult to get diagnotic logs.
+  * Add `:run_as_root` option get past uid/gid checks if this is something that
+    you'd like to try. This is not recommended and has not identified an issue
+    so far.
+
 ## v0.2.1
 
 * Bug fixes

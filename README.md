@@ -72,7 +72,7 @@ dependencies like normal:
 ```elixir
 def deps do
   [
-    {:webengine_kiosk, "~> 0.1.0"}
+    {:webengine_kiosk, "~> 0.2"}
   ]
 end
 ```
