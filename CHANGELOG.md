@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.3
+
+* Bug fixes
+  * Check minimum Qt version to avoid supporting Chromium/Qt issues that have
+    been fixed
+  * Improve default home page to give more things to try.
+
 ## v0.2.2
 
 * Bug fixes
