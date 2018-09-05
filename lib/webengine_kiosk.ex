@@ -160,6 +160,11 @@ defmodule WebengineKiosk do
     priv_dir = :code.priv_dir(:webengine_kiosk)
     cmd = Path.join(priv_dir, "kiosk")
 
+    if !File.exists?(cmd) do
+      Logger.error("Kiosk port application is missing. It should be at #{cmd}.")
+      raise "Kiosk port missing"
+    end
+
     all_options = Options.add_defaults(args)
 
     cmd_args =
