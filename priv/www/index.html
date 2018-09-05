@@ -28,15 +28,19 @@
         </div>
         <div class="topic center">Next steps in IEx</div>
         <div class="terminal center">
-            <div>iex&gt; {:ok, browser} = WebengineKiosk.start_link([fullscreen: false, homepage: "https://nerves-project.org/"]) </div>
-            <div>{:ok, #PID&lt;0.184.0>}</div>
-            <div>iex&gt; WebengineKiosk.go_to_url(browser, "https://elixir-lang.org")</div>
+            <div>iex&gt; WebengineKiosk.go_to_url(browser_pid, "https://elixir-lang.org")</div>
             <div>:ok</div>
-            <div>iex&gt; WebengineKiosk.go_home(browser)</div>
+            <div>iex&gt; WebengineKiosk.go_home(browser_pid)</div>
             <div>:ok</div>
-            <div>iex&gt; WebengineKiosk.run_javascript(browser, "window.alert('Hello, Elixir!')")</div>
+            <div>iex&gt; WebengineKiosk.run_javascript(browser_pid, "window.alert('Hello, Elixir!')")</div>
             <div>:ok</div>
-            <div>iex&gt; WebengineKiosk.stop(browser)</div>
+            <div>iex&gt; WebengineKiosk.back(browser_pid)</div>
+            <div>:ok</div>
+            <div>iex&gt; WebengineKiosk.blank(browser_pid)</div>
+            <div>:ok</div>
+            <div>iex&gt; WebengineKiosk.unblank(browser_pid)</div>
+            <div>:ok</div>
+            <div>iex&gt; WebengineKiosk.set_zoom(browser_pid, 2)</div>
             <div>:ok</div>
         </div>
         <div class="topic center">Useful links</div>
