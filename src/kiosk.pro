@@ -1,10 +1,3 @@
-!versionAtLeast(QT_VERSION, 5.11) {
-     message("Qt $${QT_VERSION} is too old. Try updating or manually specifying the location to qmake.")
-     message("For example:")
-     message("QMAKE=path/to/newer/qmake mix compile")
-     return()
-}
-
 QT       = core gui network widgets multimedia webenginewidgets
 
 CONFIG += console link_pkgconfig c++11
