@@ -54,6 +54,7 @@ defmodule WebengineKiosk.Message do
           | {:unknown, byte()}
           | {:url_changed, String.t()}
           | {:browser_crashed, atom(), byte()}
+          | {:console_log, String.t()}
   def decode(<<@msg_progress, value>>), do: {:progress, value}
   def decode(<<@msg_url_changed, url::binary>>), do: {:url_changed, url}
   def decode(<<@msg_loading_page>>), do: :started_loading_page
