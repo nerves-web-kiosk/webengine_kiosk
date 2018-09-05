@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.4
+
+* Bug fixes
+  * Remove minimum version check that didn't work on some qmake versions
+
 ## v0.2.3
 
 * Bug fixes
