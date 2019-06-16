@@ -32,7 +32,24 @@ WebengineKiosk.run_javascript(Display, "window.alert('Hello, Elixir!')")
 
 ## Kiosk options
 
-Doc all of the options here!
+The kiosk starts fullscreen and goes to a default local web page. To change
+this, set one or more options:
+
+* `background_color: color` - specify a background color as #RRGGBB or by name
+* `blank_image: path` - specify a path to an image for when the screen is blanked
+* `data_dir: path` - specify a writable path for data files
+* `debug_keys: boolean` - enable key combinations useful for debugging
+* `fullscreen: boolean` - show fullscreen
+* `gid: gid` - run the browser with this group id
+* `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
+* `monitor: index` - select the monitor for the web browser (0, 1, etc.)
+* `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend. This is only a hint.
+* `progress: boolean` - show a progress bar when loading pages
+* `run_as_root: boolean` - set to true if you really want to run Chromium as root
+* `sounds: boolean` - play sounds on clicks
+* `uid: uid` - run the browser as this user
+
+See `lib/webengine_kiosk.ex` for some untested options.
 
 ## Installation
 
