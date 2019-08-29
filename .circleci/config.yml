@@ -8,6 +8,7 @@ jobs:
       - MIX_ENV: test
     steps:
       - checkout
+      - run: sudo apt -y update		
       - run: sudo apt install qtwebengine5-dev qtmultimedia5-dev qt5-default -q
       - run: mix local.hex --force
       - run: mix deps.get
