@@ -11,6 +11,7 @@ defmodule WebengineKiosk.MixProject do
       compilers: [:elixir_make | Mix.compilers()],
       make_clean: ["clean"],
       deps: deps(),
+      aliases: aliases(),
       docs: [extras: ["README.md"]],
       description: description(),
       package: package()
@@ -33,7 +34,7 @@ defmodule WebengineKiosk.MixProject do
     [
       files: [
         "lib",
-        "priv/www",
+        "assets",
         "src/main.cpp",
         "src/Blanking.cpp",
         "src/Blanking.h",
@@ -65,5 +66,21 @@ defmodule WebengineKiosk.MixProject do
       {:elixir_make, "~> 0.4", runtime: false},
       {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
     ]
+  end
+
+  def aliases do
+    [
+      compile: ["compile", &copy_assets/1]
+    ]
+  end
+
+  defp copy_assets(_) do
+    priv_dir = :code.priv_dir(:webengine_kiosk)
+    dest = Path.join(priv_dir, "assets")
+
+    case File.cp_r("assets", dest) do
+      {:ok, _files} -> :ok
+      {:error, reason, _file} -> raise "Error trying to copy assets for WebengineKiosk: #{reason}"
+    end
   end
 end

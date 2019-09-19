@@ -34,4 +34,6 @@ webengine_kiosk-*.tar
 /src/pkg-config_wrapper.sh
 /build-kiosk-*
 
+# VSCode generated files during dev
 /.elixir_ls
+/priv/assets
