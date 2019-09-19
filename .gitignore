@@ -33,3 +33,5 @@ webengine_kiosk-*.tar
 /src/kiosk
 /src/pkg-config_wrapper.sh
 /build-kiosk-*
+
+/.elixir_ls
