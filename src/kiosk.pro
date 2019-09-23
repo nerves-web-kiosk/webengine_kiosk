@@ -30,7 +30,7 @@ HEADERS  += \
     KioskSounds.h \
     StderrPipe.h
 
-target.path = ../priv
+target.path = /$(MIX_APP_PATH)/priv
 
 INSTALLS += target
 
