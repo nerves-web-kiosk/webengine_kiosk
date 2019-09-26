@@ -53,7 +53,6 @@ defmodule WebengineKiosk.MixProject do
         "CHANGELOG.md",
         "Makefile"
       ],
-      maintainers: ["Frank Hunleth", "Justin Schneck"],
       licenses: ["Apache-2.0", "LGPL-3.0-only"],
       links: %{"GitHub" => "https://github.com/fhunleth/webengine_kiosk"}
     ]
