@@ -62,7 +62,7 @@ defmodule WebengineKiosk.MixProject do
   defp deps do
     [
       {:system_registry, "~> 0.8", optional: true},
-      {:elixir_make, "~> 0.4", runtime: false},
+      {:elixir_make, "~> 0.6", runtime: false},
       {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
     ]
   end
