@@ -1,16 +1,35 @@
+PREFIX = $(MIX_APP_PATH)/priv
+BUILD  = $(MIX_APP_PATH)/obj
+SRC_DIR = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 # Override if using a specific Qt toolkit version
 QMAKE ?= qmake
 
-all: submake
+calling_from_make:
+	mix compile
 
-src/Makefile:
-	cd src && $(QMAKE) kiosk.pro
+all: copy_assets submake
 
-submake: src/Makefile
-	+$(MAKE) -j3 -C src install
+copy_assets: $(PREFIX)
+	cp -r assets/www $(PREFIX)
 
+$(PREFIX) $(BUILD):
+	mkdir -p $@
+
+$(BUILD)/Makefile: $(BUILD) src/kiosk.pro
+	cd $(BUILD) && $(QMAKE) $(SRC_DIR)/src/kiosk.pro
+
+submake: $(BUILD)/Makefile
+	+$(MAKE) -j3 -C $(BUILD)
+	+INSTALL_ROOT="$(MIX_APP_PATH)" $(MAKE) -C $(BUILD) install
+
+ifeq ($(MIX_APP_PATH),)
 clean:
-	-rm -fr priv/kiosk src/kiosk src/Makefile src/*.o src/qrc_* src/ui_* src/moc_* src/.qmake*
+	mix clean
+else
+clean:
+	$(RM) -r $(PREFIX) $(BUILD)
+endif
 
-.PHONY: all clean submake
+.PHONY: all clean submake copy_assets
 

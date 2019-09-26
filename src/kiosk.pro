@@ -30,9 +30,12 @@ HEADERS  += \
     KioskSounds.h \
     StderrPipe.h
 
-target.path = ../priv
+RESOURCES += \
+    ui.qrc
+
+# The following line requires $INSTALL_ROOT to be set to $MIX_APP_PATH when
+# calling "make install". See $MIX_APP_PATH/obj/Makefile.
+target.path = /priv
 
 INSTALLS += target
 
-RESOURCES += \
-    ui.qrc

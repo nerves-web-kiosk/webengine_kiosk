@@ -7,7 +7,8 @@ defmodule WebengineKiosk.MixProject do
       version: "0.2.4",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      compilers: [:elixir_make | Mix.compilers()] ++ [:webengine_kiosk],
+      compilers: [:elixir_make | Mix.compilers()],
+      make_targets: ["all"],
       make_clean: ["clean"],
       deps: deps(),
       docs: [extras: ["README.md"]],
@@ -64,16 +65,5 @@ defmodule WebengineKiosk.MixProject do
       {:elixir_make, "~> 0.4", runtime: false},
       {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
     ]
-  end
-end
-
-defmodule Mix.Tasks.Compile.WebengineKiosk do
-  use Mix.Task
-
-  def run(_) do
-    dest = Application.app_dir(:webengine_kiosk, ["priv", "www"])
-    source = Path.join([File.cwd!(), "assets", "www"])
-    File.mkdir_p(dest)
-    File.cp_r(source, dest)
   end
 end
