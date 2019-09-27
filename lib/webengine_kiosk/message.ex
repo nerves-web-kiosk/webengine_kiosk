@@ -18,29 +18,29 @@ defmodule WebengineKiosk.Message do
 
   @moduledoc false
 
-  @spec go_to_url(String.t()) :: binary()
+  @spec go_to_url(String.t()) :: <<_::8, _::_*8>>
   def go_to_url(url), do: <<@msg_go_to_url, url::binary>>
 
-  @spec run_javascript(String.t()) :: binary()
+  @spec run_javascript(String.t()) :: <<_::8, _::_*8>>
   def run_javascript(code), do: <<@msg_run_javascript, code::binary>>
 
-  @spec blank(boolean()) :: binary()
+  @spec blank(boolean()) :: <<_::16>>
   def blank(true), do: <<@msg_blank, 1>>
   def blank(false), do: <<@msg_blank, 0>>
 
-  @spec reload() :: binary()
+  @spec reload() :: <<_::8>>
   def reload(), do: <<@msg_reload>>
 
-  @spec go_back() :: binary()
+  @spec go_back() :: <<_::8>>
   def go_back(), do: <<@msg_go_back>>
 
-  @spec go_forward() :: binary()
+  @spec go_forward() :: <<_::8>>
   def go_forward(), do: <<@msg_go_forward>>
 
-  @spec stop_loading() :: binary()
+  @spec stop_loading() :: <<_::8>>
   def stop_loading(), do: <<@msg_stop_loading>>
 
-  @spec set_zoom(number()) :: binary()
+  @spec set_zoom(number()) :: <<_::8, _::_*8>>
   def set_zoom(factor) when is_number(factor) do
     str = to_string(factor)
     <<@msg_set_zoom, str::binary>>
