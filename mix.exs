@@ -1,23 +1,28 @@
 defmodule WebengineKiosk.MixProject do
   use Mix.Project
 
+  @version "0.2.4"
+  @source_url "https://github.com/fhunleth/webengine_kiosk"
+
   def project do
     [
       app: :webengine_kiosk,
-      version: "0.2.4",
+      version: @version,
       elixir: "~> 1.6",
-      start_permanent: Mix.env() == :prod,
+      description: description(),
+      package: package(),
+      source_url: @source_url,
       compilers: [:elixir_make | Mix.compilers()],
       make_targets: ["all"],
       make_clean: ["clean"],
-      deps: deps(),
-      docs: [extras: ["README.md"]],
-      description: description(),
-      package: package()
+      docs: docs(),
+      dialyzer: [
+        flags: [:unmatched_returns, :error_handling, :race_conditions, :underspecs]
+      ],
+      deps: deps()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger],
@@ -33,19 +38,8 @@ defmodule WebengineKiosk.MixProject do
     [
       files: [
         "lib",
+        "src",
         "assets",
-        "src/main.cpp",
-        "src/Blanking.cpp",
-        "src/Blanking.h",
-        "src/ElixirComs.cpp",
-        "src/ElixirComs.h",
-        "src/Kiosk*.cpp",
-        "src/Kiosk*.h",
-        "src/kiosk.pro",
-        "src/StderrPipe.cpp",
-        "src/StderrPipe.h",
-        "src/ui.qrc",
-        "src/ui",
         "test",
         "mix.exs",
         "README.md",
@@ -54,7 +48,7 @@ defmodule WebengineKiosk.MixProject do
         "Makefile"
       ],
       licenses: ["Apache-2.0", "LGPL-3.0-only"],
-      links: %{"GitHub" => "https://github.com/fhunleth/webengine_kiosk"}
+      links: %{"GitHub" => @source_url}
     ]
   end
 
@@ -62,7 +56,17 @@ defmodule WebengineKiosk.MixProject do
     [
       {:system_registry, "~> 0.8", optional: true},
       {:elixir_make, "~> 0.6", runtime: false},
-      {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.6", only: :dev, runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: ["README.md"],
+      main: "readme",
+      source_ref: "v#{@version}",
+      source_url: @source_url
     ]
   end
 end
