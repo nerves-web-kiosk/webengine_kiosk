@@ -18,10 +18,7 @@ defmodule WebengineKiosk do
   end
 
   @moduledoc """
-  Control a fullscreen web browser using Elixir for use in a kiosk.
-
-
-
+  Control a fullscreen web browser using Elixir for use in a kiosk
   """
 
   @doc """
