@@ -21,16 +21,3 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 webengine_kiosk-*.tar
-
-# C++
-/priv/kiosk*
-/src/*.o
-/src/moc_*
-/src/qrc_*
-/src/.qmake.stash
-/src/*.pro.user
-/src/Makefile
-/src/kiosk
-/src/Users
-/src/pkg-config_wrapper.sh
-/build-kiosk-*
