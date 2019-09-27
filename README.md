@@ -67,6 +67,10 @@ On OSX:
 
 ```sh
 brew install qt
+
+# Homebrew doesn't automatically add `qmake` to your path, so run this when
+# building or add it to your .bashrc, .zshrc, etc.
+export PATH="/usr/local/opt/qt/bin:$PATH"
 ```
 
 If you are installing Qt manually, then the first time that you run `mix`,
