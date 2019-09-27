@@ -58,7 +58,7 @@ if Code.ensure_loaded?(SystemRegistry) do
 
     defp chgrp(devname, gid) do
       path = Path.join(@dev, devname)
-      Logger.info("webengine_kiosk: chgrp #{path}")
+      _ = Logger.info("webengine_kiosk: chgrp #{path}")
       File.chgrp(path, gid)
     end
 

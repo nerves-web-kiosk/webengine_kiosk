@@ -158,7 +158,7 @@ defmodule WebengineKiosk do
     cmd = Path.join(priv_dir, "kiosk")
 
     if !File.exists?(cmd) do
-      Logger.error("Kiosk port application is missing. It should be at #{cmd}.")
+      _ = Logger.error("Kiosk port application is missing. It should be at #{cmd}.")
       raise "Kiosk port missing"
     end
 
@@ -236,17 +236,20 @@ defmodule WebengineKiosk do
   end
 
   def handle_info({port, {:exit_status, 0}}, %{port: port} = state) do
-    Logger.info("webengine_kiosk: normal exit from port")
+    _ = Logger.info("webengine_kiosk: normal exit from port")
     {:stop, :normal, state}
   end
 
   def handle_info({port, {:exit_status, status}}, %{port: port} = state) do
-    Logger.error("webengine_kiosk: unexpected exit from port: #{status}")
+    _ = Logger.error("webengine_kiosk: unexpected exit from port: #{status}")
     {:stop, :unexpected_exit, state}
   end
 
   defp handle_browser_message({:browser_crashed, reason, _exit_status}, state) do
-    Logger.error("webengine_kiosk: browser crashed: #{inspect(reason)}. Going home and hoping...")
+    _ =
+      Logger.error(
+        "webengine_kiosk: browser crashed: #{inspect(reason)}. Going home and hoping..."
+      )
 
     # Try to recover by going back home
     send_port(state, Message.go_to_url(state.homepage))
@@ -254,12 +257,12 @@ defmodule WebengineKiosk do
   end
 
   defp handle_browser_message({:console_log, log}, state) do
-    Logger.warn("webengine_kiosk(stderr): #{log}")
+    _ = Logger.warn("webengine_kiosk(stderr): #{log}")
     {:noreply, state}
   end
 
   defp handle_browser_message(message, state) do
-    Logger.debug("webengine_kiosk: received #{inspect(message)}")
+    _ = Logger.debug("webengine_kiosk: received #{inspect(message)}")
     {:noreply, state}
   end
 
