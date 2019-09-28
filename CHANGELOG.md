@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.5
+
+* Bug fixes
+  * Move all build products under the `_build` directory. This fixes many build
+    issues that started popping up after Nerves 1.4 and Elixir 1.8. Cleaning
+    builds between changing `MIX_TARGET` is no longer needed.
+
 ## v0.2.4
 
 * Bug fixes
