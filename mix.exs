@@ -15,6 +15,7 @@ defmodule WebengineKiosk.MixProject do
       compilers: [:elixir_make | Mix.compilers()],
       make_targets: ["all"],
       make_clean: ["clean"],
+      make_error_message: make_help(),
       docs: docs(),
       dialyzer: [
         flags: [:unmatched_returns, :error_handling, :race_conditions, :underspecs]
@@ -68,5 +69,65 @@ defmodule WebengineKiosk.MixProject do
       source_ref: "v#{@version}",
       source_url: @source_url
     ]
+  end
+
+  defp using_nerves? do
+    System.get_env("CROSSCOMPILE") != nil
+  end
+
+  defp make_help do
+    """
+
+    Please look above this message for the compiler error before filing an
+    issue. The first error after the text `==> webengine_kiosk` is usually the
+    most helpful.
+
+    The webengine_kiosk library requires the Qt framework to build.
+
+    """ <> make_help_os(:os.type(), using_nerves?())
+  end
+
+  defp make_help_os({:unix, :darwin}, _nerves) do
+    """
+    To install Qt using Homebrew, run `brew install qt`. Homebrew doesn't add
+    qt to your path, so you'll need to add it or set the QMAKE environment
+    variable. For example, `export QMAKE=/usr/local/opt/qt/bin/qmake`.
+    """
+  end
+
+  defp make_help_os({:unix, _}, true) do
+    """
+    Please install Qt using your system's package manager or via source. Since
+    this is a Nerves-based project, only `qmake` is needed. For Ubuntu, this
+    looks like:
+
+    sudo apt install qt5-qmake
+
+    Another option is to set the `QMAKE` environment variable to the path to
+    the qmake binary:
+
+    QMAKE=~/Qt/5.11.1/gcc_64/bin/qmake
+    """
+  end
+
+  defp make_help_os({:unix, _}, false) do
+    """
+    Please install Qt using your system's package manager or via source. Be
+    sure to install the development headers and libraries for Qt Webengine.
+    For Ubuntu, this looks like:
+
+    sudo apt install qt5-default qtwebengine5-dev qtmultimedia5-dev
+    """
+  end
+
+  defp make_help_os({other, _}, _nerves) do
+    """
+    I'm not familiar with installing Qt5 on #{inspect(other)}. Please install
+    Qt5 using your platform's package manager or from source and consider
+    making an issue or a  PR to #{@source_url} to benefit other users.
+
+    If you're getting an error that `qmake` isn't found, try setting the
+    `QMAKE` environment variable to the path to `qmake`.
+    """
   end
 end
