@@ -68,3 +68,9 @@ KioskMessage KioskMessage::consoleLog(const QByteArray &line)
     message.prepend(KioskMessage::ConsoleLog);
     return KioskMessage(message, message.length());
 }
+
+KioskMessage KioskMessage::channelMessage(const QString &message)
+{
+    QByteArray message_ba = message.toUtf8();
+    return KioskMessage(KioskMessage::ChannelMessage, message_ba);
+}

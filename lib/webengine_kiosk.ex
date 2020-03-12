@@ -1,8 +1,5 @@
 defmodule WebengineKiosk do
-  use GenServer
-  alias WebengineKiosk.{Message, Options}
-
-  require Logger
+  use Supervisor
 
   def child_spec({opts, genserver_opts}) do
     id = genserver_opts[:id] || __MODULE__
@@ -61,17 +58,28 @@ defmodule WebengineKiosk do
   """
   @spec start_link(Keyword.t(), GenServer.options()) :: {:ok, pid} | {:error, term}
   def start_link(args, genserver_opts \\ []) do
-    with :ok <- Options.check_args(args) do
-      GenServer.start_link(__MODULE__, args, genserver_opts)
-    end
+    Supervisor.start_link(__MODULE__, args, genserver_opts)
   end
 
   @doc """
   Stop the kiosk
   """
-  @spec stop(GenServer.server()) :: :ok
+  @spec stop(Supervisor.supervisor()) :: :ok
   def stop(server) do
-    GenServer.stop(server)
+    Supervisor.stop(server)
+  end
+
+  @impl true
+  def init(init_arg) do
+    registry_name =
+      "webengine_kiosk_registry_#{System.unique_integer([:positive])}" |> String.to_atom()
+
+    children = [
+      Supervisor.child_spec({Registry, keys: :duplicate, name: registry_name}, id: :registry),
+      Supervisor.child_spec({WebengineKiosk.Kiosk, %{args: init_arg, parent: self()}}, id: :kiosk)
+    ]
+
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
   @doc """
@@ -82,225 +90,114 @@ defmodule WebengineKiosk do
   While the screen is in the blank state, it can still accept requests to go to
   other URLs.
   """
-  @spec blank(GenServer.server()) :: :ok
-  def blank(server) do
-    GenServer.call(server, {:blank, true})
-  end
+  @spec blank(Supervisor.supervisor()) :: :ok
+  def blank(server), do: call_kiosk(server, {:blank, true})
 
   @doc """
   Unblank the screen
 
   Show the web browser again.
   """
-  @spec unblank(GenServer.server()) :: :ok
-  def unblank(server) do
-    GenServer.call(server, {:blank, false})
-  end
+  @spec unblank(Supervisor.supervisor()) :: :ok
+  def unblank(server), do: call_kiosk(server, {:blank, false})
 
   @doc """
   Request that the browser go to the homepage.
   """
-  @spec go_home(GenServer.server()) :: :ok | {:error, term}
-  def go_home(server) do
-    GenServer.call(server, :go_home)
-  end
+  @spec go_home(Supervisor.supervisor()) :: :ok | {:error, term}
+  def go_home(server), do: call_kiosk(server, :go_home)
 
   @doc """
   Request that the browser go to the specified URL.
   """
-  @spec go_to_url(GenServer.server(), String.t()) :: :ok | {:error, term}
-  def go_to_url(server, url) do
-    GenServer.call(server, {:go_to_url, url})
-  end
+  @spec go_to_url(Supervisor.supervisor(), String.t()) :: :ok | {:error, term}
+  def go_to_url(server, url), do: call_kiosk(server, {:go_to_url, url})
 
   @doc """
   Run Javascript in the browser.
   """
-  @spec run_javascript(GenServer.server(), String.t()) :: :ok | {:error, term}
-  def run_javascript(server, code) do
-    GenServer.call(server, {:run_javascript, code})
-  end
+  @spec run_javascript(Supervisor.supervisor(), String.t()) :: :ok | {:error, term}
+  def run_javascript(server, code), do: call_kiosk(server, {:run_javascript, code})
 
   @doc """
   Reload the current page.
   """
-  @spec reload(GenServer.server()) :: :ok | {:error, term()}
-  def reload(server), do: GenServer.call(server, :reload)
+  @spec reload(Supervisor.supervisor()) :: :ok | {:error, term()}
+  def reload(server), do: call_kiosk(server, :reload)
 
   @doc """
   Go to the previously visited page.
   """
-  @spec back(GenServer.server()) :: :ok | {:error, term()}
-  def back(server), do: GenServer.call(server, :back)
+  @spec back(Supervisor.supervisor()) :: :ok | {:error, term()}
+  def back(server), do: call_kiosk(server, :back)
 
   @doc """
   Go forward in history.
   """
-  @spec forward(GenServer.server()) :: :ok | {:error, term()}
-  def forward(server), do: GenServer.call(server, :forward)
+  @spec forward(Supervisor.supervisor()) :: :ok | {:error, term()}
+  def forward(server), do: call_kiosk(server, :forward)
 
   @doc """
   Stop loading the current page.
   """
-  @spec stop_loading(GenServer.server()) :: :ok | {:error, term()}
-  def stop_loading(server), do: GenServer.call(server, :stop_loading)
+  @spec stop_loading(Supervisor.supervisor()) :: :ok | {:error, term()}
+  def stop_loading(server), do: call_kiosk(server, :stop_loading)
 
   @doc """
   Set the zoom factor for displaying the page.
   """
-  @spec set_zoom(GenServer.server(), number()) :: :ok | {:error, term()}
+  @spec set_zoom(Supervisor.supervisor(), number()) :: :ok | {:error, term()}
   def set_zoom(server, factor) when is_number(factor) and factor > 0 do
-    GenServer.call(server, {:set_zoom, factor})
+    call_kiosk(server, {:set_zoom, factor})
   end
 
-  def init(args) do
-    priv_dir = :code.priv_dir(:webengine_kiosk)
-    cmd = Path.join(priv_dir, "kiosk")
+  @doc """
+  Register calling process to receive events
+  """
+  @spec register(Supervisor.supervisor()) :: {:ok, pid} | {:error, term()}
+  def register(server) do
+    Registry.register(registry_name(server), "events", [])
+  end
 
-    if !File.exists?(cmd) do
-      _ = Logger.error("Kiosk port application is missing. It should be at #{cmd}.")
-      raise "Kiosk port missing"
+  @doc """
+  Unregister calling process from receiving events
+  """
+  @spec unregister(Supervisor.supervisor()) :: :ok
+  def unregister(server) do
+    Registry.unregister(registry_name(server), "events")
+  end
+
+  @spec dispatch_event(Supervisor.supervisor(), any) :: :ok
+  def dispatch_event(server, event) do
+    Registry.dispatch(registry_name(server), "events", fn entries ->
+      for {pid, _} <- entries, do: send(pid, event)
+    end)
+  end
+
+  @spec registry_name(Supervisor.supervisor()) :: atom()
+  defp registry_name(server) do
+    {:ok, pid} = find_child(server, :registry)
+    {:registered_name, reg_name} = Process.info(pid, :registered_name)
+    reg_name
+  end
+
+  @spec call_kiosk(Supervisor.supervisor(), term) :: term
+  defp call_kiosk(server, msg) do
+    {:ok, pid} = find_child(server, :kiosk)
+    GenServer.call(pid, msg)
+  end
+
+  @spec find_child(Supervisor.supervisor(), atom()) :: {:ok, pid} | :error
+  defp find_child(supervisor, id) do
+    ret =
+      Supervisor.which_children(supervisor)
+      |> Enum.find(fn {ch_id, _, _, _} -> ch_id == id end)
+
+    if ret != nil do
+      {_, pid, _, _} = ret
+      {:ok, pid}
+    else
+      :error
     end
-
-    all_options = Options.add_defaults(args)
-
-    cmd_args =
-      all_options
-      |> Enum.flat_map(fn {key, value} -> ["--#{key}", to_string(value)] end)
-
-    set_permissions(all_options)
-    homepage = Keyword.get(all_options, :homepage)
-
-    port =
-      Port.open({:spawn_executable, cmd}, [
-        {:args, cmd_args},
-        {:cd, priv_dir},
-        {:packet, 2},
-        :use_stdio,
-        :binary,
-        :exit_status
-      ])
-
-    {:ok, %{port: port, homepage: homepage}}
-  end
-
-  def handle_call(:go_home, _from, state) do
-    send_port(state, Message.go_to_url(state.homepage))
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:go_to_url, url}, _from, state) do
-    send_port(state, Message.go_to_url(url))
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:run_javascript, code}, _from, state) do
-    send_port(state, Message.run_javascript(code))
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:blank, yes}, _from, state) do
-    send_port(state, Message.blank(yes))
-    {:reply, :ok, state}
-  end
-
-  def handle_call(:reload, _from, state) do
-    send_port(state, Message.reload())
-    {:reply, :ok, state}
-  end
-
-  def handle_call(:back, _from, state) do
-    send_port(state, Message.go_back())
-    {:reply, :ok, state}
-  end
-
-  def handle_call(:forward, _from, state) do
-    send_port(state, Message.go_forward())
-    {:reply, :ok, state}
-  end
-
-  def handle_call(:stop_loading, _from, state) do
-    send_port(state, Message.stop_loading())
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:set_zoom, factor}, _from, state) do
-    send_port(state, Message.set_zoom(factor))
-    {:reply, :ok, state}
-  end
-
-  def handle_info({_, {:data, raw_message}}, state) do
-    raw_message
-    |> Message.decode()
-    |> handle_browser_message(state)
-  end
-
-  def handle_info({port, {:exit_status, 0}}, %{port: port} = state) do
-    _ = Logger.info("webengine_kiosk: normal exit from port")
-    {:stop, :normal, state}
-  end
-
-  def handle_info({port, {:exit_status, status}}, %{port: port} = state) do
-    _ = Logger.error("webengine_kiosk: unexpected exit from port: #{status}")
-    {:stop, :unexpected_exit, state}
-  end
-
-  defp handle_browser_message({:browser_crashed, reason, _exit_status}, state) do
-    _ =
-      Logger.error(
-        "webengine_kiosk: browser crashed: #{inspect(reason)}. Going home and hoping..."
-      )
-
-    # Try to recover by going back home
-    send_port(state, Message.go_to_url(state.homepage))
-    {:noreply, state}
-  end
-
-  defp handle_browser_message({:console_log, log}, state) do
-    _ = Logger.warn("webengine_kiosk(stderr): #{log}")
-    {:noreply, state}
-  end
-
-  defp handle_browser_message(message, state) do
-    _ = Logger.debug("webengine_kiosk: received #{inspect(message)}")
-    {:noreply, state}
-  end
-
-  defp send_port(state, message) do
-    send(state.port, {self(), {:command, message}})
-  end
-
-  defp set_permissions(opts) do
-    # Check if we are on a raspberry pi
-    if File.exists?("/dev/vchiq") do
-      File.chgrp("/dev/vchiq", 28)
-      File.chmod("/dev/vchiq", 0o660)
-    end
-
-    if data_dir = Keyword.get(opts, :data_dir) do
-      File.mkdir_p(data_dir)
-
-      if uid = Keyword.get(opts, :uid) do
-        chown(data_dir, uid)
-      end
-    end
-  end
-
-  defp chown(file, uid) when is_binary(uid) do
-    case System.cmd("id", ["-u", uid]) do
-      {uid, 0} ->
-        uid =
-          String.trim(uid)
-          |> String.to_integer()
-
-        chown(file, uid)
-
-      _ ->
-        :error
-    end
-  end
-
-  defp chown(file, uid) when is_integer(uid) do
-    File.chown(file, uid)
   end
 end

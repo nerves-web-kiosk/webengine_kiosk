@@ -15,6 +15,7 @@ defmodule WebengineKiosk.Message do
   @msg_set_zoom 13
   @msg_browser_crashed 14
   @msg_console_log 15
+  @msg_channel_msg 16
 
   @moduledoc false
 
@@ -55,6 +56,7 @@ defmodule WebengineKiosk.Message do
           | {:url_changed, String.t()}
           | {:browser_crashed, atom(), byte()}
           | {:console_log, String.t()}
+          | {:channel_message, String.t()}
   def decode(<<@msg_progress, value>>), do: {:progress, value}
   def decode(<<@msg_url_changed, url::binary>>), do: {:url_changed, url}
   def decode(<<@msg_loading_page>>), do: :started_loading_page
@@ -67,6 +69,10 @@ defmodule WebengineKiosk.Message do
 
   def decode(<<@msg_console_log, message::binary>>) do
     {:console_log, message}
+  end
+
+  def decode(<<@msg_channel_msg, message::binary>>) do
+    {:channel_message, message}
   end
 
   def decode(<<msg_type, _payload::binary>>), do: {:unknown, msg_type}

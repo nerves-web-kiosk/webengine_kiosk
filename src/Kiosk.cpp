@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QLabel>
 #include <QMetaObject>
+#include <QMessageBox>
 
 Kiosk::Kiosk(const KioskSettings *settings, QObject *parent) :
     QObject(parent),
@@ -66,11 +67,20 @@ void Kiosk::init()
     view_->settings()->setAttribute(QWebEngineSettings::JavascriptEnabled, settings_->javascriptEnabled);
     view_->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, settings_->javascriptCanOpenWindows);
 
+    // Set elixir channel
+    elixirChannel_ = new ElixirJsChannel();
+    webChannel_ = new QWebChannel(this);
+    webChannel_->registerObject("elixirJsChannel", elixirChannel_);
+    view_->page()->setWebChannel(webChannel_);
+
     connect(view_, SIGNAL(loadStarted()), SLOT(startLoading()));
     connect(view_, SIGNAL(urlChanged(const QUrl &)), SLOT(urlChanged(const QUrl &)));
     connect(view_, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
-    connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));
+    connect(view_, SIGNAL(loadFinished(bool)), SLOT(finishLoading()));    
     connect(view_, SIGNAL(renderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus,int)), SLOT(handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus,int)));
+
+    connect(elixirChannel_, SIGNAL(received(const QString &)), SLOT(elixirMessageReceived(const QString &)));
+
     window_->setView(view_);
     view_->load(settings_->homepage);
 
@@ -290,6 +300,12 @@ void Kiosk::urlChanged(const QUrl &url)
     if (player_)
         player_->play(settings_->linkClickedSound);
 }
+
+void Kiosk::elixirMessageReceived(const QString &messageStr)
+{
+    coms_->send(KioskMessage::channelMessage(messageStr));
+}
+
 
 QRect Kiosk::calculateWindowRect() const
 {

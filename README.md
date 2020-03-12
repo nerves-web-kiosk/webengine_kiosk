@@ -22,7 +22,7 @@ It can also be linked into your application's supervision tree:
 # Example childspecs
 
    [
-      {WebengineKiosk, {[homepage: "https://somewhere.com", background: "black"], name: MyKiosk}}
+      {WebengineKiosk, {[homepage: "https://somewhere.com", background: "black"], name: Display}}
    ]
 
 # Somewhere else in your code
@@ -50,6 +50,51 @@ this, set one or more options:
 * `uid: uid` - run the browser as this user
 
 See `lib/webengine_kiosk.ex` for some untested options.
+
+## Events
+
+Process can subscribe to receive events from `WebengineKiosk`. Subscribe using `register` function like this from another process:
+
+```elixir
+WebengineKiosk.register(Display, self())
+```
+
+If the subscribing process is `GenServer` you can handle events like this:
+
+```elixir
+def handle_info({:webengine_kiosk, {:channel_message, message}}, state) do
+  # Do something with event ...
+  {:noreply, state}
+end
+```
+
+## Sending messages back to elixir
+
+You can send data from Javascript back to elixir using `QtWebChannel`.
+
+First you need to load appropriate javascript library:
+
+Place this somewhere in `<head>`
+```html
+<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+```
+
+Than in your javascript code initialize `QtWebChannel`:
+
+```javascript
+new QWebChannel(qt.webChannelTransport, function (channel) {
+  var JSobject = channel.objects.elixirJsChannel;
+  window.elixirJsChannel = JSobject;
+});
+```
+
+than anywhere in your javascript code you can call following function to send messages:
+
+```javascript
+window.elixirJsChannel.send("Hello world!");
+```
+
+The message will appear as `:channel_message` event. Only text can be sent, but if you want so send objects, you can serialize the to JSON and send them as such.
 
 ## Installation
 
