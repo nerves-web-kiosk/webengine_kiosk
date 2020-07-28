@@ -1,6 +1,6 @@
 # WebengineKiosk
 
-[![CircleCI](https://circleci.com/gh/fhunleth/webengine_kiosk.svg?style=svg)](https://circleci.com/gh/fhunleth/webengine_kiosk)
+[![CircleCI](https://circleci.com/gh/nerves-web-kiosk/webengine_kiosk.svg?style=svg)](https://circleci.com/gh/nerves-web-kiosk/webengine_kiosk)
 [![Hex version](https://img.shields.io/hexpm/v/webengine_kiosk.svg "Hex version")](https://hex.pm/packages/webengine_kiosk)
 
 Launch and control a fullscreen web browser from Elixir. This is intended for
