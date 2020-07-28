@@ -1,8 +1,8 @@
 defmodule WebengineKiosk.MixProject do
   use Mix.Project
 
-  @version "0.2.5"
-  @source_url "https://github.com/fhunleth/webengine_kiosk"
+  @version "0.3.0"
+  @source_url "https://github.com/nerves-web-kiosk/webengine_kiosk"
 
   def project do
     [

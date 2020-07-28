@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0
+
+* New features
+  * Allow sending data from Javascript back to elixir using `QtWebChannel`.
+  * Allow subscribing to events from `WebengineKiosk`.
+
 ## v0.2.5
 
 * Bug fixes
