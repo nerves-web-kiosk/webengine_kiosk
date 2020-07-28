@@ -7,6 +7,7 @@ TARGET = kiosk
 TEMPLATE = app
 
 SOURCES += main.cpp\
+    ElixirJsChannel.cpp \
     KioskSettings.cpp \
     ElixirComs.cpp \
     KioskView.cpp \
@@ -19,6 +20,7 @@ SOURCES += main.cpp\
     StderrPipe.cpp
 
 HEADERS  += \
+    ElixirJsChannel.h \
     KioskSettings.h \
     ElixirComs.h \
     KioskView.h \

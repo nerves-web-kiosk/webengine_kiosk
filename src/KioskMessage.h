@@ -23,7 +23,8 @@ public:
         StopLoading = 12,
         SetZoom = 13,
         BrowserCrashed = 14,
-        ConsoleLog = 15
+        ConsoleLog = 15,
+        ChannelMessage = 16
     };
 
     explicit KioskMessage(const QByteArray &rawMessage);
@@ -43,6 +44,7 @@ public:
     static KioskMessage wakeup();
     static KioskMessage browserCrashed(int terminationStatus, int exitCode);
     static KioskMessage consoleLog(const QByteArray &line);
+    static KioskMessage channelMessage(const QString &message);
 
 private:
     const QByteArray rawMessage_;

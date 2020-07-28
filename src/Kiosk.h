@@ -2,6 +2,7 @@
 #define KIOSK_H
 
 #include "KioskSettings.h"
+#include "ElixirJsChannel.h"
 #include <QWebEnginePage>
 
 class ElixirComs;
@@ -39,6 +40,7 @@ private slots:
     void startLoading();
     void setProgress(int p);
     void finishLoading();
+    void elixirMessageReceived(const QString &messageStr);
 
     void handleWakeup();
     void handleRenderProcessTerminated(QWebEnginePage::RenderProcessTerminationStatus status, int exitCode);
@@ -48,6 +50,9 @@ private:
     QRect calculateWindowRect() const;
 
 private:
+    QWebChannel *webChannel_;
+    ElixirJsChannel *elixirChannel_;
+
     const KioskSettings *settings_;
     ElixirComs *coms_;
     StderrPipe *stderrPipe_;
