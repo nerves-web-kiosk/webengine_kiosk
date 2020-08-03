@@ -42,6 +42,8 @@ this, set one or more options:
 * `fullscreen: boolean` - show fullscreen
 * `gid: gid` - run the browser with this group id
 * `homepage: url` - load this page first. For local files, specify `file:///path/to/index.html`
+* `http_accept_language: string` - overrides the default Accept-Language string
+* `http_user_agent: string` - overrides the default UserAgent string
 * `monitor: index` - select the monitor for the web browser (0, 1, etc.)
 * `opengl: "gl" | "gles" | "software" | "auto"` - specify the OpenGL backend. This is only a hint.
 * `progress: boolean` - show a progress bar when loading pages

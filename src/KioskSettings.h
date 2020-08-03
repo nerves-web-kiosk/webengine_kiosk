@@ -46,6 +46,8 @@ struct KioskSettings
 
     QString blankImage;
     QColor backgroundColor;
+    QString httpAcceptLanguage;
+    QString httpUserAgent;
 };
 
 #endif // KIOSKSETTINGS_H

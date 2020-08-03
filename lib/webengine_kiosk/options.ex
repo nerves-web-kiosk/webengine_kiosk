@@ -27,7 +27,9 @@ defmodule WebengineKiosk.Options do
     :gid,
     :blank_image,
     :background_color,
-    :run_as_root
+    :run_as_root,
+    :http_accept_language,
+    :http_user_agent
   ]
 
   @moduledoc false

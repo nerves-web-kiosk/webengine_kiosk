@@ -44,7 +44,9 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
             {"zoom_factor", "The zoom factor for the page (0.25 to 5.0).", "factor", "1.0"},
             {"blank_image", "An image to use when the screen should be blank", "path", ""},
             {"background_color", "The background color of the browser and blank screen (unless there's a blank_image)", "#RRGGBB or name", "white"},
-            {"run_as_root", "Explicitly allow the kiosk to run as the root user", "bool", "false"}
+            {"run_as_root", "Explicitly allow the kiosk to run as the root user", "bool", "false"},
+            {"http_accept_language", "Overrides the default Accept-Language", "language-locale", ""},
+            {"http_user_agent", "Overrides the default User-Agent string", "string", ""}
         });
     parser.addOptions(options);
     parser.process(app);
@@ -90,4 +92,6 @@ KioskSettings::KioskSettings(const QCoreApplication &app)
         zoomFactor = 5.0;
     blankImage = parser.value("blank_image");
     backgroundColor = QColor(parser.value("background_color"));
+    httpAcceptLanguage = parser.value("http_accept_language");
+    httpUserAgent = parser.value("http_user_agent");
 }
